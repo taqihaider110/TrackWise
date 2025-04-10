@@ -1,0 +1,49 @@
+<nav class="sidebar" [class.open]="isOpen">
+  <div class="toggle-btn" (click)="toggleSidebar()">
+    <img *ngIf="!isOpen" src="assets/icons/menu.svg" alt="menu-icon" />
+    <img *ngIf="isOpen" src="assets/icons/chevron-left.svg" alt="menu-icon" />
+  </div>
+
+  <ul>
+    <li class="nav-item" (click)="gotoHome()">
+      <div class="content">
+        <div class="icon-wrapper">
+          <img src="assets/icons/home.svg" alt="Home icon" class="icon default" />
+          <img src="assets/icons/home-hover.svg" alt="Home icon hover" class="icon hover" />
+        </div>
+        <span class="text">Home</span>
+      </div>
+    </li>
+
+    <li class="nav-item" (click)="gotoDashboard()">
+      <div class="content">
+        <div class="icon-wrapper">
+          <img src="assets/icons/dashboard.svg" alt="Dashboard icon" class="icon default" />
+          <img src="assets/icons/dashboard-hover.svg" alt="Dashboard icon hover" class="icon hover" />
+        </div>
+        <span class="text">Dashboard</span>
+      </div>
+    </li>
+
+    <li class="nav-item" (click)="gotoIncome()">
+      <div class="content">
+        <div class="icon-wrapper">
+          <img src="assets/icons/income.svg" alt="Income icon" class="icon default" />
+          <img src="assets/icons/income-hover.svg" alt="Income icon hover" class="icon hover" />
+        </div>
+        <span class="text">Income</span>
+      </div>
+    </li>
+
+    <li class="nav-item" (click)="gotoExpenses()">
+      <div class="content">
+        <div class="icon-wrapper">
+          <img src="assets/icons/expenses.svg" alt="Expenses icon" class="icon default" />
+          <img src="assets/icons/expenses-hover.svg" alt="Expenses icon hover" class="icon hover" />
+        </div>
+        <span class="text">Expenses</span>
+      </div>
+    </li>
+    
+  </ul>
+</nav>

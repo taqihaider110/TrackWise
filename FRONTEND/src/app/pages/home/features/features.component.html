@@ -1,0 +1,22 @@
+<div class="section-container flex flex-col items-center justify-center">
+  <div class="text-outline mb-15">Features</div>
+
+  <div class="features-section poppins-medium w-full">
+    <div class="feature-heading text-accent pb-6">What Makes Us Different?</div>
+
+    <div class="sub-heading">
+      Our AI-Driven Personal Finance Tracker is designed to make financial
+      management effortless.
+    </div>
+
+    <div class="features-container">
+      <div class="feature-box" *ngFor="let feature of features">
+        <div class="icon">{{ feature.icon }}</div>
+        <div class="feature-title">{{ feature.title }}</div>
+        <ul>
+          <li *ngFor="let point of feature.points">{{ point }}</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

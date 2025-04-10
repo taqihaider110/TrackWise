@@ -1,0 +1,62 @@
+@import "tailwindcss";
+@import url('./theme/global.scss');
+@import url('./theme/fonts.scss');
+@import url('./theme/elements.scss');
+
+// canvas {
+//   height: 300px !important;
+// }
+
+
+
+// body {
+//   background-color: #121212;
+//   color: #ffffff;
+//   transition: background-color 0.3s, color 0.3s;
+// }
+
+
+// // src/styles/theme.scss
+
+// // 🌙 Dark Theme Variables
+// $dark-bg: #121212;
+// $dark-text: #ffffff;
+// $dark-card: #1e1e1e;
+
+// $primary: #4CAF50;  // Green - Growth
+// $secondary: #F44336; // Red - Expenses
+// $accent: #FF9800;    // Orange - Warnings
+
+// // Apply Dark Theme Globally
+// :root {
+//   --bg-color: #{$dark-bg};
+//   --text-color: #{$dark-text};
+//   --card-bg: #{$dark-card};
+// }
+
+// // Global Styles
+// body {
+//   background-color: var(--bg-color);
+//   color: var(--text-color);
+//   transition: background-color 0.3s, color 0.3s;
+// }
+
+// .card {
+//   background-color: var(--card-bg);
+//   padding: 1rem;
+//   border-radius: 10px;
+//   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+// }
+
+// // Tailwind Extension (tailwind.config.ts)
+// /* Add this to tailwind.config.ts:
+//   extend: {
+//     colors: {
+//       primary: '#4CAF50',
+//       secondary: '#F44336',
+//       accent: '#FF9800',
+//       bg: '#121212',
+//       text: '#ffffff',
+//     },
+//   }
+// */

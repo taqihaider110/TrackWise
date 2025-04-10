@@ -1,0 +1,83 @@
+<!-- <div class="flex flex-col min-h-screen"> -->
+<!-- Header -->
+
+<div class="page-wrapper">
+  <app-header></app-header>
+  <app-breadcrumb [text]="'Dashboard'"></app-breadcrumb>
+
+  <div class="flex flex-row mt-10">
+    <app-side-bar class="pr-15"></app-side-bar>
+
+    <div class="flex flex-col flex-1 pr-10">
+      <div class="flex flex-col lg:flex-row gap-6">
+        <div class="g-container">
+          <div class="flex justify-between items-center mx-3 mt-2 mb-3">
+            <div class="text-outline">Monthly Income</div>
+            <button class="button-2" routerLink="/income">
+              <div class="flex">
+                See All
+                <img src="assets/icons/arrow-right.svg" alt="Arrow Right" class="ml-1" />
+              </div>
+            </button>
+          </div>
+          <p-chart type="line" [data]="chartData" [options]="chartOptions" class="h-full w-full"></p-chart>
+        </div>
+        <div class="pc-container"></div>
+      </div>
+
+      <div class="flex flex-col lg:flex-row gap-6 mt-10">
+        <div class="g-container lg:order-2">
+          <div class="flex justify-between items-center mx-3 mt-2 mb-3">
+            <div class="text-outline">Monthly Expenses</div>
+            <button class="button-2" routerLink="/expenses">
+              <div class="flex">
+                See All
+                <img src="assets/icons/arrow-right.svg" alt="Arrow Right" class="ml-1" />
+              </div>
+            </button>
+          </div>
+          <p-chart type="line" [data]="chartData" [options]="chartOptions" class="h-full w-full"></p-chart>
+        </div>
+        <div class="pc-container lg:order-1"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Content Section -->
+
+<!-- <div class="flex flex-1 "> -->
+<!-- Sidebar -->
+<!-- <app-side-bar></app-side-bar> -->
+
+<!-- Main Content -->
+<!-- <main class="flex-1 p-6 pl-30">
+      <h2 class="text-3xl font-bold mb-6">Dashboard</h2> -->
+
+<!-- Financial Summary -->
+<!-- <div class="grid grid-cols-3 gap-4 mb-6">
+        <div class="p-4 shadow-md rounded-lg">
+          <h3 class="text-lg font-semibold">Total Income</h3>
+          <p class="text-green-600 text-2xl">$0.00</p>
+        </div>
+        <div class="p-4 shadow-md rounded-lg">
+          <h3 class="text-lg font-semibold">Total Expenses</h3>
+          <p class="text-red-600 text-2xl">$0.00</p>
+        </div>
+        <div class=" p-4 shadow-md rounded-lg">
+          <h3 class="text-lg font-semibold">Savings</h3>
+          <p class="text-blue-600 text-2xl">$0.00</p>
+          <button class="bg-blue-600 px-4 py-2 rounded-lg hover:bg-blue-700">
+            + Add Transaction
+          </button>
+        </div>
+      </div> -->
+
+<!-- Placeholder for Graphs -->
+<!-- <div class="p-6 shadow-md rounded-lg">
+        <h3 class="text-lg font-semibold mb-4">Financial Overview</h3>
+        <p>Graphs will be displayed here...</p>
+      </div>
+    </main>
+  </div>
+</div> -->
