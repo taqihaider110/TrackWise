@@ -1,16 +1,22 @@
 const { Sequelize } = require('sequelize');
+const config = require('./config'); // Importing config for environments
 require('dotenv').config(); // Ensure that environment variables are loaded
+
+// Determine the current environment (production or development)
+const env = process.env.NODE_ENV || 'development';
+const dbConfig = config[env]; // Get configuration based on environment
 
 // Initialize Sequelize instance using environment variables
 const sequelize = new Sequelize(
-  process.env.DB_NAME,      // Database Name from .env file
-  process.env.DB_USERNAME,  // User from .env file
-  process.env.DB_PASSWORD,  // Password from .env file
+  dbConfig.database,      // Database Name from .env file
+  dbConfig.username,      // User from .env file
+  dbConfig.password,      // Password from .env file
   {
-    host: process.env.DB_HOST,   // Host from .env file
-    port: process.env.DB_PORT || 5432, // Port from .env file (default to 5432)
-    dialect: 'postgres',     // Database dialect (postgres in your case)
+    host: dbConfig.host,   // Host from config
+    port: dbConfig.port || 5432, // Port from config (default to 5432)
+    dialect: dbConfig.dialect,     // Database dialect (postgres in your case)
     logging: false,          // Disable logging in production
+    dialectOptions: dbConfig.dialectOptions || {},
   }
 );
 
@@ -18,9 +24,9 @@ const sequelize = new Sequelize(
 const connectDB = async () => {
   try {
     await sequelize.authenticate();
-    console.log('Database connected successfully');
+    console.log('✅ Database connected successfully');
   } catch (error) {
-    console.error('Unable to connect to the database:', error);
+    console.error('❌ Unable to connect to the database:', error);
   }
 };
 

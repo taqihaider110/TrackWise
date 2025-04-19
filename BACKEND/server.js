@@ -1,23 +1,24 @@
 const express = require('express');
 const cors = require('cors');
-require('dotenv').config();  // Load environment variables from .env file
-const open = require('open').default;  // Correct import for open package
+require('dotenv').config(); // Load environment variables
+const open = require('open').default; // To open Swagger UI in browser
 
-// Import the connectDB function to establish the database connection
-const { connectDB } = require('./config/db');
+const { connectDB } = require('./config/db'); // DB connection
 
-// Swagger setup
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 
-// Initialize Express app
 const app = express();
+const PORT = process.env.PORT || 5000;
+const NODE_ENV = process.env.NODE_ENV || 'development';
 
-// Middleware Setup
+console.log(`🔧 Running in ${NODE_ENV.toUpperCase()} mode`);
+
+// Middleware
 app.use(cors());
-app.use(express.json());  // Parse incoming JSON requests
+app.use(express.json());
 
-// Swagger documentation setup
+// Swagger setup
 const swaggerOptions = {
   definition: {
     openapi: '3.0.0',
@@ -31,76 +32,67 @@ const swaggerOptions = {
         bearerAuth: {
           type: 'http',
           scheme: 'bearer',
-          bearerFormat: 'JWT', // Bearer token for API requests
+          bearerFormat: 'JWT',
         },
       },
     },
   },
-  apis: ['./routes/*.js'],  // Path to your route files for documentation
+  apis: ['./routes/*.js'],
 };
 
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-// Test Route
+// Root route
 app.get('/', (req, res) => {
   res.send('Welcome to AI-Driven Finance Tracker API!');
 });
 
-// Import Routes
-const authRoutes = require('./routes/authRoutes');
-const landingRoutes = require('./routes/landingRoutes');
-const dashboardRoutes = require('./routes/dashboardRoutes');
-const profileRoutes = require('./routes/profileRoutes');
-const expenseRoutes = require('./routes/expenseRoutes');
-const incomeRoutes = require('./routes/incomeRoutes');
-const predictionRoutes = require('./routes/predictionRoutes');
+// Routes
+app.use('/api/v1/auth', require('./routes/authRoutes'));
+app.use('/api/v1/landing', require('./routes/landingRoutes'));
+app.use('/api/v1/dashboard', require('./routes/dashboardRoutes'));
+app.use('/api/v1/profile', require('./routes/profileRoutes'));
+app.use('/api/v1/expenses', require('./routes/expenseRoutes'));
+app.use('/api/v1/incomes', require('./routes/incomeRoutes'));
+app.use('/api/v1/predictions', require('./routes/predictionRoutes'));
 
-// API Routes with versioning
-app.use('/api/v1/auth', authRoutes);
-app.use('/api/v1/landing', landingRoutes);
-app.use('/api/v1/dashboard', dashboardRoutes);
-app.use('/api/v1/profile', profileRoutes);
-app.use('/api/v1/expenses', expenseRoutes);
-app.use('/api/v1/incomes', incomeRoutes);
-app.use('/api/v1/predictions', predictionRoutes);
-
-// Database Connection (Ensure DB is connected before starting the server)
+// Connect to DB and start server
 connectDB()
   .then(() => {
-    // Start the server
-    const server = app.listen(process.env.PORT || 5000, async () => {
-      console.log(`Server running on port ${process.env.PORT || 5000}`);
-  
-      // Automatically open the Swagger UI in the browser
-      await open('http://localhost:5000/api-docs');
+    const server = app.listen(PORT, async () => {
+      console.log(`✅ Server running on port ${PORT}`);
+
+      // Always open Swagger UI in browser
+      const swaggerURL = `http://localhost:${PORT}/api-docs`;
+      console.log(`🔍 Opening Swagger UI at ${swaggerURL}`);
+      await open(swaggerURL);
     });
-  
-    // Graceful shutdown - Handle SIGINT (Ctrl+C)
+
+    // Graceful shutdown
     process.on('SIGINT', () => {
       server.close(() => {
-        console.log('Server terminated');
+        console.log('🛑 Server terminated via SIGINT');
       });
     });
-  
-    // Graceful shutdown - Handle SIGTERM (e.g., Docker/Kubernetes termination)
+
     process.on('SIGTERM', () => {
       server.close(() => {
-        console.log('Server terminated due to SIGTERM');
+        console.log('🛑 Server terminated via SIGTERM');
       });
     });
   })
   .catch((err) => {
-    console.error('Failed to connect to the database:', err);
-    process.exit(1);  // Exit if DB connection fails
+    console.error('❌ Failed to connect to the database:', err);
+    process.exit(1);
   });
 
-// Catch-all Error Handling (Async errors)
+// Global error handler
 app.use((err, req, res, next) => {
-  console.error('Error:', err);  // Log the error for debugging
-  const statusCode = err.statusCode || 500;  // Default to 500 if no status code set
+  console.error('Error:', err);
+  const statusCode = err.statusCode || 500;
   res.status(statusCode).json({
     message: err.message,
-    stack: process.env.NODE_ENV === 'development' ? err.stack : undefined,  // Show stack trace only in development
+    stack: NODE_ENV === 'development' ? err.stack : undefined,
   });
 });
