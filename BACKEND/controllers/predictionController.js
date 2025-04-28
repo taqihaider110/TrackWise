@@ -1,6 +1,5 @@
 const Expense = require("../models/Expense");
 const { Op } = require("sequelize");  // Import Sequelize operators for filtering
-const { predictExpenses } = require("../utils/mlModel"); // Your ML model prediction function
 
 // Get Predicted Expenses
 exports.getExpensePrediction = async (req, res) => {
