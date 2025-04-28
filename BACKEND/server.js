@@ -14,11 +14,40 @@ const NODE_ENV = process.env.NODE_ENV || 'development';
 
 console.log(`🔧 Running in ${NODE_ENV.toUpperCase()} mode`);
 
-// Middleware
-app.use(cors());
+// ------------------------
+// 🛡️ CORS Setup
+// ------------------------
+const allowedOrigins = [
+  process.env.CORS_ORIGIN, // Production frontend
+  'http://localhost:3000', // Local frontend (development)
+];
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps or curl)
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+};
+
+app.use(cors(corsOptions));
+
+// ------------------------
+// 📦 Middleware
+// ------------------------
 app.use(express.json());
 
-// Swagger setup
+// ------------------------
+// 📄 Swagger setup
+// ------------------------
 const swaggerOptions = {
   definition: {
     openapi: '3.0.0',
@@ -43,12 +72,16 @@ const swaggerOptions = {
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-// Root route
+// ------------------------
+// 🏠 Root route
+// ------------------------
 app.get('/', (req, res) => {
   res.send('Welcome to AI-Driven Finance Tracker API!');
 });
 
-// Routes
+// ------------------------
+// 🚀 API Routes
+// ------------------------
 app.use('/api/v1/auth', require('./routes/authRoutes'));
 app.use('/api/v1/landing', require('./routes/landingRoutes'));
 app.use('/api/v1/dashboard', require('./routes/dashboardRoutes'));
@@ -57,7 +90,9 @@ app.use('/api/v1/expenses', require('./routes/expenseRoutes'));
 app.use('/api/v1/incomes', require('./routes/incomeRoutes'));
 // app.use('/api/v1/predictions', require('./routes/predictionRoutes'));
 
-// Connect to DB and start server
+// ------------------------
+// 🔗 Connect to DB and Start server
+// ------------------------
 connectDB()
   .then(() => {
     const server = app.listen(PORT, async () => {
@@ -87,7 +122,9 @@ connectDB()
     process.exit(1);
   });
 
-// Global error handler
+// ------------------------
+// ⚡ Global Error Handler
+// ------------------------
 app.use((err, req, res, next) => {
   console.error('Error:', err);
   const statusCode = err.statusCode || 500;
