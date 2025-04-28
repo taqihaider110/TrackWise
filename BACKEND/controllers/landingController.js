@@ -4,9 +4,9 @@
 exports.getLandingInfo = async (req, res) => {
     try {
       // Ensure the userId is available from the authenticated user
-      if (!req.user || !req.user.id) {
-        return res.status(400).json({ error: "User ID is missing" });
-      }
+      // if (!req.user || !req.user.id) {
+      //   return res.status(400).json({ error: "User ID is missing" });
+      // }
   
       // Static response for the landing page
       const landingInfo = {
