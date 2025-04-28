@@ -55,7 +55,7 @@ app.use('/api/v1/dashboard', require('./routes/dashboardRoutes'));
 app.use('/api/v1/profile', require('./routes/profileRoutes'));
 app.use('/api/v1/expenses', require('./routes/expenseRoutes'));
 app.use('/api/v1/incomes', require('./routes/incomeRoutes'));
-app.use('/api/v1/predictions', require('./routes/predictionRoutes'));
+// app.use('/api/v1/predictions', require('./routes/predictionRoutes'));
 
 // Connect to DB and start server
 connectDB()
