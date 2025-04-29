@@ -97,11 +97,13 @@ connectDB()
   .then(() => {
     const server = app.listen(PORT, async () => {
       console.log(`✅ Server running on port ${PORT}`);
-
+    
       // Always open Swagger UI in browser
       const swaggerURL = `http://localhost:${PORT}/api-docs`;
       console.log(`🔍 Opening Swagger UI at ${swaggerURL}`);
-      await open(swaggerURL);
+    
+      const open = await import('open').then(mod => mod.default);
+      open(swaggerURL);
     });
 
     // Graceful shutdown
