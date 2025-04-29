@@ -60,7 +60,7 @@ router.post("/", authMiddleware, addIncome);
  * @swagger
  * /api/v1/incomes:
  *   get:
- *     summary: Get all income sources (filter by month)
+ *     summary: Get all income sources (filter by month and year, with pagination)
  *     tags: [Income]
  *     security:
  *       - bearerAuth: []
@@ -68,11 +68,27 @@ router.post("/", authMiddleware, addIncome);
  *       - name: month
  *         in: query
  *         required: false
+ *         schema:
+ *           type: integer
  *         description: "Month to filter (1-12)"
  *       - name: year
  *         in: query
  *         required: false
+ *         schema:
+ *           type: integer
  *         description: "Year to filter (e.g., 2025)"
+ *       - name: page
+ *         in: query
+ *         required: false
+ *         schema:
+ *           type: integer
+ *         description: "Page number for pagination (default is 1)"
+ *       - name: pageSize
+ *         in: query
+ *         required: false
+ *         schema:
+ *           type: integer
+ *         description: "Number of records per page (default is 10)"
  *     responses:
  *       200:
  *         description: List of all income sources
@@ -87,6 +103,17 @@ router.post("/", authMiddleware, addIncome);
  *                     type: object
  *                 totalIncome:
  *                   type: number
+ *                 pagination:
+ *                   type: object
+ *                   properties:
+ *                     totalRecords:
+ *                       type: integer
+ *                     currentPage:
+ *                       type: integer
+ *                     pageSize:
+ *                       type: integer
+ *                     totalPages:
+ *                       type: integer
  */
 router.get("/", authMiddleware, getIncomes);
 

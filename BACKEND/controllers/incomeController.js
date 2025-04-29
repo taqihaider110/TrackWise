@@ -44,36 +44,54 @@ exports.addIncome = async (req, res) => {
 };
 
 
-// Get all Incomes (with filtering by month)
+// Get all Incomes (with filtering by month + pagination)
 exports.getIncomes = async (req, res) => {
   try {
-    const { month, year } = req.query; // Fetch month and year from query params
-    
+    const { month, year, page = 1, pageSize = 10 } = req.query;
+
     if (!req.user || !req.user.id) {
       return res.status(400).json({ error: "User ID is missing" });
     }
 
     const where = { userId: req.user.id };
-    
+
     if (month && year) {
       where.date = {
         [Op.between]: [
-          new Date(year, month - 1, 1), // Start of the month
-          new Date(year, month, 0), // End of the month
-        ]
+          new Date(year, month - 1, 1),
+          new Date(year, month, 0),
+        ],
       };
     }
 
+    const parsedPage = parseInt(page);
+    const parsedPageSize = parseInt(pageSize);
+    const offset = (parsedPage - 1) * parsedPageSize;
+
+    // Fetch paginated incomes
     const incomes = await Income.findAll({
       where,
+      limit: parsedPageSize,
+      offset,
+      order: [['date', 'DESC']],
     });
 
-    // Get the monthly income summary
-    const totalIncome = await Income.sum('amount', {
-      where,
-    });
+    // Get total income amount
+    const totalIncome = await Income.sum('amount', { where });
 
-    res.status(200).json({ incomes, totalIncome });
+    // Get total count for pagination metadata
+    const totalCount = await Income.count({ where });
+
+    res.status(200).json({
+      incomes,
+      totalIncome,
+      pagination: {
+        totalRecords: totalCount,
+        currentPage: parsedPage,
+        pageSize: parsedPageSize,
+        totalPages: Math.ceil(totalCount / parsedPageSize),
+      },
+    });
   } catch (error) {
     console.error("Error fetching incomes:", error);
     res.status(400).json({ error: error.message });

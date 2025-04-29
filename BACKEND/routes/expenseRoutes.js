@@ -58,7 +58,7 @@ router.post("/", authMiddleware, addExpenses);
  * @swagger
  * /api/v1/expenses:
  *   get:
- *     summary: Get all expenses
+ *     summary: Get all expenses (with optional month, year, and pagination filters)
  *     tags: [Expenses]
  *     security:
  *       - bearerAuth: []
@@ -66,11 +66,27 @@ router.post("/", authMiddleware, addExpenses);
  *       - name: month
  *         in: query
  *         required: false
- *         description: "The month to filter expenses by (format: MM)"
+ *         schema:
+ *           type: integer
+ *         description: "The month to filter expenses by (1-12)"
  *       - name: year
  *         in: query
  *         required: false
+ *         schema:
+ *           type: integer
  *         description: "The year to filter by (e.g., 2025)"
+ *       - name: page
+ *         in: query
+ *         required: false
+ *         schema:
+ *           type: integer
+ *         description: "Page number for pagination. Default is 1"
+ *       - name: pageSize
+ *         in: query
+ *         required: false
+ *         schema:
+ *           type: integer
+ *         description: "Number of records per page. Default is 10"
  *     responses:
  *       200:
  *         description: List of all expenses
@@ -83,8 +99,19 @@ router.post("/", authMiddleware, addExpenses);
  *                   type: array
  *                   items:
  *                     type: object
- *                 totalExpenses:
+ *                 totalExpenses:  # Ensure this matches the controller's response
  *                   type: number
+ *                 pagination:
+ *                   type: object
+ *                   properties:
+ *                     totalRecords:
+ *                       type: integer
+ *                     currentPage:
+ *                       type: integer
+ *                     pageSize:
+ *                       type: integer
+ *                     totalPages:
+ *                       type: integer
  */
 router.get("/", authMiddleware, getExpenses);
 
