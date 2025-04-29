@@ -19,7 +19,7 @@ console.log(`🔧 Running in ${NODE_ENV.toUpperCase()} mode`);
 // ------------------------
 const allowedOrigins = [
   process.env.CORS_ORIGIN, // Production frontend
-  'http://localhost:3000', // Local frontend (development)
+  'http://localhost:4200', // Local frontend (development)
 ];
 
 const corsOptions = {
