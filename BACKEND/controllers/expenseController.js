@@ -1,6 +1,7 @@
 const { Op } = require("sequelize");
 const sequelize = require("sequelize");
 const Expense = require("../models/Expense");
+const moment = require("moment");
 
 // Add multiple expenses
 const addExpenses = async (req, res) => {
@@ -96,6 +97,61 @@ const getExpenses = async (req, res) => {
         res.status(500).json({ error: "Server error while fetching expenses" });
     }
 };
+
+const getPast12MonthsExpenses = async (req, res) => {
+    try {
+      const userId = req.user.id;
+  
+      const endDate = moment().startOf("month").subtract(1, "day").endOf("day");
+      const startDate = moment().startOf("month").subtract(12, "months");
+  
+      const expenses = await Expense.findAll({
+        where: {
+          userId,
+          date: {
+            [Op.between]: [startDate.toDate(), endDate.toDate()],
+          },
+        },
+        order: [["date", "DESC"]],
+      });
+  
+      // Prepare a map for month-year keys
+      const summaryMap = {};
+  
+      expenses.forEach((expense) => {
+        const m = moment(expense.date);
+        const key = m.format("YYYY-MM");
+        if (!summaryMap[key]) {
+          summaryMap[key] = {
+            month: m.format("MMM"),
+            year: m.year(),
+            totalAmount: 0,
+            expenseCount: 0,
+            categoryDistribution: {},
+          };
+        }
+  
+        summaryMap[key].totalAmount += expense.amount;
+        summaryMap[key].expenseCount += 1;
+  
+        if (!summaryMap[key].categoryDistribution[expense.category]) {
+          summaryMap[key].categoryDistribution[expense.category] = 0;
+        }
+  
+        summaryMap[key].categoryDistribution[expense.category] += expense.amount;
+      });
+  
+      // Sort and format the result
+      const sortedSummary = Object.keys(summaryMap)
+        .sort((a, b) => moment(b, "YYYY-MM") - moment(a, "YYYY-MM"))
+        .map((key) => summaryMap[key]);
+  
+      res.status(200).json(sortedSummary);
+    } catch (error) {
+      console.error("Error generating expense summary:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  };
 
 // Update an expense
 const updateExpense = async (req, res) => {
@@ -206,4 +262,5 @@ module.exports = {
     updateExpense,
     deleteExpense,
     getMonthlySummary,
+    getPast12MonthsExpenses,
 };

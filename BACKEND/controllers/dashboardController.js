@@ -1,5 +1,4 @@
-const Income = require("../models/Income");
-const Expense = require("../models/Expense");
+const { Income, Expense, Goal, Debt } = require('../models');
 
 exports.getDashboardSummary = async (req, res) => {
   try {
@@ -9,22 +8,52 @@ exports.getDashboardSummary = async (req, res) => {
     const incomes = await Income.findAll({ where: { userId } });
     const totalIncome = incomes.reduce((sum, i) => sum + i.amount, 0);
 
-    // Total expense
+    // Total expenses
     const expenses = await Expense.findAll({ where: { userId } });
-    const totalExpense = expenses.reduce((sum, e) => sum + e.amount, 0);
+    const totalExpenses = expenses.reduce((sum, e) => sum + e.amount, 0);
 
     // Calculate savings
-    const savings = totalIncome - totalExpense;
+    const savings = totalIncome - totalExpenses;
+
+    // Calculate savings rate
+    const savingsRate = (totalIncome === 0) ? 0 : (savings / totalIncome) * 100;
+
+    // Income vs expense ratio
+    const incomeVsExpenseRatio = totalIncome / (totalExpenses || 1); // Prevent division by zero
+
+    // Category breakdown for expenses
+    const categoryDistribution = {};
+    expenses.forEach(exp => {
+      categoryDistribution[exp.category] = (categoryDistribution[exp.category] || 0) + exp.amount;
+    });
+
+    // Recent incomes and expenses (latest 5)
+    const recentIncomes = incomes.slice(-5).reverse();  // Latest 5 incomes
+    const recentExpenses = expenses.slice(-5).reverse(); // Latest 5 expenses
+
+    // Financial goal and progress
+    const goal = await Goal.findOne({ where: { userId } });
+    const savingsProgress = goal ? (savings / goal.target) * 100 : 0;
+
+    // Debts (optional)
+    const debts = await Debt.findAll({ where: { userId } });
+    const totalDebt = debts.reduce((sum, debt) => sum + debt.amountOwed, 0);
 
     res.status(200).json({
       totalIncome,
-      totalExpense,
+      totalExpenses,
       savings,
-      recentIncomes: incomes.slice(-5).reverse(),  // Optional: latest 5 incomes
-      recentExpenses: expenses.slice(-5).reverse(), // Optional: latest 5 expenses
+      savingsRate,
+      incomeVsExpenseRatio,
+      recentIncomes,
+      recentExpenses,
+      categoryDistribution,
+      goal: goal ? goal.target : 0,
+      savingsProgress,
+      totalDebt,
     });
   } catch (error) {
     console.error("Dashboard summary error:", error);
-    res.status(400).json({ error: "Failed to load dashboard data" });
+    res.status(500).json({ error: "Failed to load dashboard data" });
   }
 };

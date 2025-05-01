@@ -39,3 +39,32 @@ npx sequelize-cli db:migrate:undo:all
 
 🚀 Production:
 NODE_ENV=production npx sequelize-cli db:migrate:undo:all
+
+
+SEEDING COMMANDS
+To populate your database with sample data (seeds).
+
+Run Seed Data:
+Seed Data Locally: Apply the seed data to the local development database:
+npm run db:seed
+
+Seed Data in Production: Apply the seed data to the production database:
+npm run db:seed:prod
+
+
+Undo Seed Data:
+
+Undo Last Seed (Local): Roll back the most recent seed in the local development database:
+npm run db:seed:undo
+
+Undo Last Seed (Production): Roll back the most recent seed in the production database:
+npm run db:seed:undo:prod
+
+
+Create Database:
+To create the database in your environment (useful for first-time setup):
+npm run db:create
+
+Drop Database:
+To drop the existing database (useful when you need to reset):
+npm run db:drop

@@ -5,6 +5,7 @@ const {
   updateExpense,
   deleteExpense,
   getMonthlySummary,
+  getPast12MonthsExpenses,
 } = require("../controllers/expenseController");
 const authMiddleware = require("../middlewares/authMiddleware");
 const router = express.Router();
@@ -137,6 +138,52 @@ router.get("/", authMiddleware, getExpenses);
  *         description: Monthly summary with total and breakdown by category
  */
 router.get("/monthly-summary", authMiddleware, getMonthlySummary);
+
+
+/**
+ * @swagger
+ * /api/v1/expenses/past-12-months:
+ *   get:
+ *     summary: Get summarized expense data for the past 12 months (excluding current month)
+ *     tags: [Expenses]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Monthly summaries of expenses for the past 12 months
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   month:
+ *                     type: string
+ *                     example: Apr
+ *                   year:
+ *                     type: integer
+ *                     example: 2025
+ *                   totalAmount:
+ *                     type: number
+ *                     example: 4200
+ *                   expenseCount:
+ *                     type: integer
+ *                     example: 12
+ *                   categoryDistribution:
+ *                     type: object
+ *                     additionalProperties:
+ *                       type: number
+ *                     example:
+ *                       Food: 1500
+ *                       Transport: 700
+ *                       Utilities: 2000
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Server error
+ */
+router.get("/past-12-months", authMiddleware, getPast12MonthsExpenses);
 
 /**
  * @swagger
