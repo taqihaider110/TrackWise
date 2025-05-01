@@ -3,23 +3,23 @@
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server",
-    "start:dev": "dotenv -e .env.development -- node server.js",
-    "start:prod": "dotenv -e .env.production -- node server.js",
-    "deploy": "curl -X POST \"https://api.render.com/deploy/srv-d01a21be5dus73e1r1cg?key=4tGOzJxmNlA\"",
-    "db:migrate": "npx sequelize-cli db:migrate",
-    "db:migrate:prod": "NODE_ENV=production npx sequelize-cli db:migrate",
-    "db:migrate:undo": "npx sequelize-cli db:migrate:undo",
-    "db:migrate:undo:prod": "NODE_ENV=production npx sequelize-cli db:migrate:undo",
-    "db:migrate:undo:all": "npx sequelize-cli db:migrate:undo:all",
-    "db:migrate:undo:all:prod": "NODE_ENV=production npx sequelize-cli db:migrate:undo:all",
-    "db:seed": "npx sequelize-cli db:seed:all",
-    "db:seed:prod": "NODE_ENV=production npx sequelize-cli db:seed:all",
-    "db:seed:undo": "npx sequelize-cli db:seed:undo:all",
-    "db:seed:undo:prod": "NODE_ENV=production npx sequelize-cli db:seed:undo:all",
-    "db:create": "npx sequelize-cli db:create",
-    "db:drop": "npx sequelize-cli db:drop"
+  "test": "echo \"Error: no test specified\" && exit 1",
+  "start": "node server",
+  "start:dev": "dotenv -e .env.development -- node server.js",
+  "start:prod": "dotenv -e .env.production -- node server.js",
+  "deploy": "curl -X POST \"https://api.render.com/deploy/srv-d01a21be5dus73e1r1cg?key=4tGOzJxmNlA\"",
+  "db:migrate": "npx sequelize-cli db:migrate",
+  "db:migrate:prod": "cross-env NODE_ENV=production npx sequelize-cli db:migrate",
+  "db:migrate:undo": "npx sequelize-cli db:migrate:undo",
+  "db:migrate:undo:prod": "cross-env NODE_ENV=production npx sequelize-cli db:migrate:undo",
+  "db:migrate:undo:all": "npx sequelize-cli db:migrate:undo:all",
+  "db:migrate:undo:all:prod": "cross-env NODE_ENV=production npx sequelize-cli db:migrate:undo:all",
+  "db:seed": "npx sequelize-cli db:seed:all",
+  "db:seed:prod": "cross-env NODE_ENV=production npx sequelize-cli db:seed:all",
+  "db:seed:undo": "npx sequelize-cli db:seed:undo:all",
+  "db:seed:undo:prod": "cross-env NODE_ENV=production npx sequelize-cli db:seed:undo:all",
+  "db:create": "npx sequelize-cli db:create",
+  "db:drop": "npx sequelize-cli db:drop"
   },
   "keywords": [],
   "author": "",
@@ -40,6 +40,7 @@
     "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
+    "cross-env": "^7.0.3",
     "dotenv-cli": "^8.0.0",
     "sequelize-cli": "^6.6.2"
   }

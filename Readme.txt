@@ -18,11 +18,10 @@ npx sequelize-cli migration:generate --name create-expenses-table
 
 🔹 Run Migrations
 🔧 Local (Development):
-npx sequelize-cli db:migrate
-
+npm run db:migrate
 
 🚀 Production:
-NODE_ENV=production npx sequelize-cli db:migrate
+npm run db:migrate:prod
 
 
 🔁 Undo Migrations (Rollback)

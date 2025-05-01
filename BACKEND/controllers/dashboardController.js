@@ -1,59 +1,101 @@
-const { Income, Expense, Goal, Debt } = require('../models');
+const { Op } = require("sequelize");
+const sequelize = require("sequelize");
+const Expense  = require('../models/Expense');
+const Income = require('../models/Income');
+const Goal = require('../models/Goal');
+const SavingsProgress = require('../models/SavingsProgress');
 
-exports.getDashboardSummary = async (req, res) => {
-  try {
-    const userId = req.user.id;
+const getDashboardSummary = async (req, res) => {
+    try {
+        if (!req.user || !req.user.id) {
+            return res.status(400).json({ error: "User ID is missing" });
+        }
 
-    // Total income
-    const incomes = await Income.findAll({ where: { userId } });
-    const totalIncome = incomes.reduce((sum, i) => sum + i.amount, 0);
+        const userId = req.user.id;
 
-    // Total expenses
-    const expenses = await Expense.findAll({ where: { userId } });
-    const totalExpenses = expenses.reduce((sum, e) => sum + e.amount, 0);
+        // Validate the page query parameter (optional)
+        let { page = 1, pageSize = 5 } = req.query;
+        const parsedPage = parseInt(page, 10);
+        const parsedLimit = parseInt(pageSize, 10);
 
-    // Calculate savings
-    const savings = totalIncome - totalExpenses;
+        if (isNaN(parsedPage) || parsedPage <= 0) {
+            return res.status(400).json({ error: "Invalid page number" });
+        }
 
-    // Calculate savings rate
-    const savingsRate = (totalIncome === 0) ? 0 : (savings / totalIncome) * 100;
+        if (isNaN(parsedLimit) || parsedLimit <= 0) {
+            return res.status(400).json({ error: "Invalid limit" });
+        }
 
-    // Income vs expense ratio
-    const incomeVsExpenseRatio = totalIncome / (totalExpenses || 1); // Prevent division by zero
+        const offset = (parsedPage - 1) * parsedLimit;
 
-    // Category breakdown for expenses
-    const categoryDistribution = {};
-    expenses.forEach(exp => {
-      categoryDistribution[exp.category] = (categoryDistribution[exp.category] || 0) + exp.amount;
-    });
+        // Get total income and expenses using aggregation
+        const totalIncome = await Income.sum('amount', { where: { userId } });
+        const totalExpenses = await Expense.sum('amount', { where: { userId } });
 
-    // Recent incomes and expenses (latest 5)
-    const recentIncomes = incomes.slice(-5).reverse();  // Latest 5 incomes
-    const recentExpenses = expenses.slice(-5).reverse(); // Latest 5 expenses
+        // Calculate savings
+        const savings = totalIncome - totalExpenses;
 
-    // Financial goal and progress
-    const goal = await Goal.findOne({ where: { userId } });
-    const savingsProgress = goal ? (savings / goal.target) * 100 : 0;
+        // Calculate savings rate
+        const savingsRate = totalIncome === 0 ? 0 : (savings / totalIncome) * 100;
 
-    // Debts (optional)
-    const debts = await Debt.findAll({ where: { userId } });
-    const totalDebt = debts.reduce((sum, debt) => sum + debt.amountOwed, 0);
+        // Income vs expense ratio (handle division by 0)
+        const incomeVsExpenseRatio = totalIncome && totalExpenses ? totalIncome / totalExpenses : 0;
 
-    res.status(200).json({
-      totalIncome,
-      totalExpenses,
-      savings,
-      savingsRate,
-      incomeVsExpenseRatio,
-      recentIncomes,
-      recentExpenses,
-      categoryDistribution,
-      goal: goal ? goal.target : 0,
-      savingsProgress,
-      totalDebt,
-    });
-  } catch (error) {
-    console.error("Dashboard summary error:", error);
-    res.status(500).json({ error: "Failed to load dashboard data" });
-  }
+        // Get the category distribution for expenses
+        const categoryDistribution = await Expense.findAll({
+            attributes: ['category', [sequelize.fn('SUM', sequelize.col('amount')), 'total']],
+            where: { userId },
+            group: ['category'],
+            raw: true,
+        });
+
+        // Fetch the latest incomes and expenses with pagination
+        const { count: incomeCount, rows: recentIncomes } = await Income.findAndCountAll({
+            where: { userId },
+            offset,
+            limit: parsedLimit,
+            order: [['date', 'DESC']],
+        });
+
+        const { count: expenseCount, rows: recentExpenses } = await Expense.findAndCountAll({
+            where: { userId },
+            offset,
+            limit: parsedLimit,
+            order: [['date', 'DESC']],
+        });
+
+        // Get the financial goal and savings progress
+        const goal = await Goal.findOne({ where: { userId } });
+        const savingsProgress = await SavingsProgress.findOne({ where: { userId } });
+
+        const savingsProgressPercentage = savingsProgress ? savingsProgress.progress : 0;
+
+        // Return dashboard summary
+        res.status(200).json({
+            totalIncome,
+            totalExpenses,
+            savings,
+            savingsRate,
+            incomeVsExpenseRatio,
+            recentIncomes,
+            recentExpenses,
+            categoryDistribution,
+            goal: goal ? goal.target : 0, // Default to 0 if no goal
+            savingsProgress: savingsProgressPercentage,
+            pagination: {
+                totalIncomes: incomeCount,
+                totalExpenses: expenseCount,
+                currentPage: parsedPage,
+                pageSize: parsedLimit,
+                totalPages: Math.ceil(Math.max(incomeCount, expenseCount) / parsedLimit),
+            },
+        });
+    } catch (error) {
+        console.error("Dashboard summary error:", error);
+        res.status(500).json({ error: "Failed to load dashboard data" });
+    }
+};
+
+module.exports = {
+    getDashboardSummary,
 };
