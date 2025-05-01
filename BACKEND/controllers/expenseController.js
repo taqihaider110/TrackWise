@@ -6,7 +6,7 @@ const moment = require("moment");
 // Add multiple expenses
 const addExpenses = async (req, res) => {
     try {
-        const expenses = req.body;  // Expecting an array of expenses
+        const expenses = req.body.expense;  // Expecting the array to be under the 'expense' key
 
         if (!Array.isArray(expenses)) {
             return res.status(400).json({ error: "Invalid data format. Expected an array of expenses." });

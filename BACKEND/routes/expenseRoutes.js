@@ -30,23 +30,24 @@ const router = express.Router();
  *       content:
  *         application/json:
  *           schema:
- *             type: array
- *             items:
- *               type: object
- *               properties:
- *                 category:
- *                   type: string
- *                 amount:
- *                   type: number
- *                 date:
- *                   type: string
- *                   format: date
- *                 description:
- *                   type: string
+ *             type: object
+ *             properties:
+ *               expense:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     category:
+ *                       type: string
+ *                     amount:
+ *                       type: number
+ *                     date:
+ *                       type: string
+ *                       format: date
+ *                     description:
+ *                       type: string
  *             required:
- *               - category
- *               - amount
- *               - date
+ *               - expense
  *     responses:
  *       201:
  *         description: Expenses added successfully
