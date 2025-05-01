@@ -100,10 +100,14 @@ const getExpenses = async (req, res) => {
 
 const getPast12MonthsExpenses = async (req, res) => {
     try {
+        if (!req.user || !req.user.id) {
+            return res.status(400).json({ error: "User ID is missing" });
+        }
+        
       const userId = req.user.id;
   
-      const endDate = moment().startOf("month").subtract(1, "day").endOf("day");
-      const startDate = moment().startOf("month").subtract(12, "months");
+      const endDate = moment().endOf("day"); // Include current month
+      const startDate = moment().subtract(12, "months").startOf("month");
   
       const expenses = await Expense.findAll({
         where: {
@@ -115,7 +119,6 @@ const getPast12MonthsExpenses = async (req, res) => {
         order: [["date", "DESC"]],
       });
   
-      // Prepare a map for month-year keys
       const summaryMap = {};
   
       expenses.forEach((expense) => {
@@ -127,21 +130,13 @@ const getPast12MonthsExpenses = async (req, res) => {
             year: m.year(),
             totalAmount: 0,
             expenseCount: 0,
-            categoryDistribution: {},
           };
         }
   
         summaryMap[key].totalAmount += expense.amount;
         summaryMap[key].expenseCount += 1;
-  
-        if (!summaryMap[key].categoryDistribution[expense.category]) {
-          summaryMap[key].categoryDistribution[expense.category] = 0;
-        }
-  
-        summaryMap[key].categoryDistribution[expense.category] += expense.amount;
       });
   
-      // Sort and format the result
       const sortedSummary = Object.keys(summaryMap)
         .sort((a, b) => moment(b, "YYYY-MM") - moment(a, "YYYY-MM"))
         .map((key) => summaryMap[key]);
@@ -151,7 +146,8 @@ const getPast12MonthsExpenses = async (req, res) => {
       console.error("Error generating expense summary:", error);
       res.status(500).json({ message: "Internal server error" });
     }
-  };
+};
+
 
 // Update an expense
 const updateExpense = async (req, res) => {

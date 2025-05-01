@@ -1,6 +1,7 @@
 const Income = require("../models/Income");
 const { Op } = require("sequelize");
 const { sequelize } = require("../config/db"); // Import sequelize from the config
+const moment = require("moment");
 
 // Add Income (Handle multiple incomes)
 exports.addIncome = async (req, res) => {
@@ -171,5 +172,56 @@ exports.getIncomeCategories = async (req, res) => {
   } catch (error) {
     console.error("Error fetching income categories:", error);
     res.status(400).json({ error: error.message });
+  }
+};
+
+//12 months income summary
+exports.getPast12MonthsIncome = async (req, res) => {
+  try {
+    if (!req.user || !req.user.id) {
+      return res.status(400).json({ error: "User ID is missing" });
+    }
+
+    const userId = req.user.id;
+
+    const endDate = moment().endOf("day"); // Include current month
+    const startDate = moment().subtract(12, "months").startOf("month"); // Start from the beginning of the month 12 months ago
+
+    const incomes = await Income.findAll({
+      where: {
+        userId,
+        date: {
+          [Op.between]: [startDate.toDate(), endDate.toDate()],
+        },
+      },
+      order: [["date", "DESC"]],
+    });
+
+    const summaryMap = {};
+
+    incomes.forEach((income) => {
+      const m = moment(income.date);
+      const key = m.format("YYYY-MM");
+      if (!summaryMap[key]) {
+        summaryMap[key] = {
+          month: m.format("MMM"),
+          year: m.year(),
+          totalAmount: 0,
+          incomeCount: 0,
+        };
+      }
+
+      summaryMap[key].totalAmount += income.amount;
+      summaryMap[key].incomeCount += 1;
+    });
+
+    const sortedSummary = Object.keys(summaryMap)
+      .sort((a, b) => moment(b, "YYYY-MM") - moment(a, "YYYY-MM"))
+      .map((key) => summaryMap[key]);
+
+    res.status(200).json(sortedSummary);
+  } catch (error) {
+    console.error("Error fetching past 12 months' income summary:", error);
+    res.status(500).json({ error: error.message });
   }
 };

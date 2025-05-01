@@ -5,6 +5,7 @@ const {
   updateIncome,
   deleteIncome,
   getIncomeCategories,
+  getPast12MonthsIncome,
 } = require("../controllers/incomeController");
 const authMiddleware = require("../middlewares/authMiddleware");
 const router = express.Router();
@@ -130,6 +131,50 @@ router.get("/", authMiddleware, getIncomes);
  *         description: Income categories breakdown
  */
 router.get("/categories", authMiddleware, getIncomeCategories);
+
+/**
+ * @swagger
+ * /api/v1/incomes/past-12-months:
+ *   get:
+ *     summary: Get summarized income data for the past 12 months (including current month)
+ *     tags: [Income]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Monthly summaries of income for the past 12 months
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   month:
+ *                     type: string
+ *                     example: Apr
+ *                   year:
+ *                     type: integer
+ *                     example: 2025
+ *                   totalAmount:
+ *                     type: number
+ *                     example: 5000
+ *                   incomeCount:
+ *                     type: integer
+ *                     example: 10
+ *                   sourceDistribution:
+ *                     type: object
+ *                     additionalProperties:
+ *                       type: number
+ *                     example:
+ *                       Salary: 3000
+ *                       Freelance: 2000
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Server error
+ */
+router.get("/past-12-months", authMiddleware, getPast12MonthsIncome); // Add this line for the route
 
 /**
  * @swagger

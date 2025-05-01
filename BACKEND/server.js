@@ -21,6 +21,7 @@ const allowedOrigins = [
   process.env.CORS_ORIGIN, // Production frontend
   'http://localhost:4200', // Local frontend (development)
   'http://localhost:10000',// Swagger UI (if it's running on port 10000)
+  'https://ai-finance-tracker-ko8v.onrender.com',
 ];
 
 const corsOptions = {

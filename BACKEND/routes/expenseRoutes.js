@@ -144,7 +144,7 @@ router.get("/monthly-summary", authMiddleware, getMonthlySummary);
  * @swagger
  * /api/v1/expenses/past-12-months:
  *   get:
- *     summary: Get summarized expense data for the past 12 months (excluding current month)
+ *     summary: Get summarized expense data for the past 12 months (including current month)
  *     tags: [Expenses]
  *     security:
  *       - bearerAuth: []
@@ -170,14 +170,6 @@ router.get("/monthly-summary", authMiddleware, getMonthlySummary);
  *                   expenseCount:
  *                     type: integer
  *                     example: 12
- *                   categoryDistribution:
- *                     type: object
- *                     additionalProperties:
- *                       type: number
- *                     example:
- *                       Food: 1500
- *                       Transport: 700
- *                       Utilities: 2000
  *       401:
  *         description: Unauthorized
  *       500:
