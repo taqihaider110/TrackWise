@@ -1,5 +1,5 @@
 
-# Project Name
+# FINANCE TRACKER
 
 ## Running Locally
 
