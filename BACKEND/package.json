@@ -2,25 +2,28 @@
   "name": "backend",
   "version": "1.0.0",
   "main": "server.js",
-  "scripts": {
+"scripts": {
   "test": "echo \"Error: no test specified\" && exit 1",
   "start": "node server",
   "start:dev": "dotenv -e .env.development -- node server.js",
   "start:prod": "dotenv -e .env.production -- node server.js",
   "deploy": "curl -X POST \"https://api.render.com/deploy/srv-d01a21be5dus73e1r1cg?key=4tGOzJxmNlA\"",
-  "db:migrate": "npx sequelize-cli db:migrate",
-  "db:migrate:prod": "cross-env NODE_ENV=production npx sequelize-cli db:migrate",
-  "db:migrate:undo": "npx sequelize-cli db:migrate:undo",
-  "db:migrate:undo:prod": "cross-env NODE_ENV=production npx sequelize-cli db:migrate:undo",
-  "db:migrate:undo:all": "npx sequelize-cli db:migrate:undo:all",
-  "db:migrate:undo:all:prod": "cross-env NODE_ENV=production npx sequelize-cli db:migrate:undo:all",
-  "db:seed": "npx sequelize-cli db:seed:all",
-  "db:seed:prod": "cross-env NODE_ENV=production npx sequelize-cli db:seed:all",
-  "db:seed:undo": "npx sequelize-cli db:seed:undo:all",
-  "db:seed:undo:prod": "cross-env NODE_ENV=production npx sequelize-cli db:seed:undo:all",
+
   "db:create": "npx sequelize-cli db:create",
-  "db:drop": "npx sequelize-cli db:drop"
-  },
+  "db:drop": "npx sequelize-cli db:drop",
+
+  "db:migrate": "npx sequelize-cli db:migrate",
+  "db:migrate:prod": "dotenv -e .env.production -- npx sequelize-cli db:migrate --env production --config config/config.js",
+  "db:migrate:undo": "npx sequelize-cli db:migrate:undo",
+  "db:migrate:undo:prod": "dotenv -e .env.production -- npx sequelize-cli db:migrate:undo --env production --config config/config.js",
+  "db:migrate:undo:all": "npx sequelize-cli db:migrate:undo:all",
+  "db:migrate:undo:all:prod": "dotenv -e .env.production -- npx sequelize-cli db:migrate:undo:all --env production --config config/config.js",
+
+  "db:seed": "npx sequelize-cli db:seed:all",
+  "db:seed:prod": "dotenv -e .env.production -- npx sequelize-cli db:seed:all --env production --config config/config.js",
+  "db:seed:undo": "npx sequelize-cli db:seed:undo:all",
+  "db:seed:undo:prod": "dotenv -e .env.production -- npx sequelize-cli db:seed:undo:all --env production --config config/config.js"
+},
   "keywords": [],
   "author": "",
   "license": "ISC",

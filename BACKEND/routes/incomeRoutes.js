@@ -6,6 +6,7 @@ const {
   deleteIncome,
   getIncomeCategories,
   getPast12MonthsIncome,
+  getMonthlyIncomeSummary,
 } = require("../controllers/incomeController");
 const authMiddleware = require("../middlewares/authMiddleware");
 const router = express.Router();
@@ -175,6 +176,59 @@ router.get("/categories", authMiddleware, getIncomeCategories);
  *         description: Server error
  */
 router.get("/past-12-months", authMiddleware, getPast12MonthsIncome); // Add this line for the route
+
+/**
+ * @swagger
+ * /api/v1/incomes/monthly-summary:
+ *   get:
+ *     summary: Get monthly income summary and category breakdown
+ *     tags: [Income]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: month
+ *         in: query
+ *         required: true
+ *         schema:
+ *           type: integer
+ *           example: 4
+ *         description: "Month to summarize (1-12)"
+ *       - name: year
+ *         in: query
+ *         required: true
+ *         schema:
+ *           type: integer
+ *           example: 2025
+ *         description: "Year to summarize (e.g., 2025)"
+ *     responses:
+ *       200:
+ *         description: Monthly income summary and breakdown by category
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 totalIncome:
+ *                   type: number
+ *                   example: 5000
+ *                 categoryBreakdown:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       category:
+ *                         type: string
+ *                         example: Freelance
+ *                       totalAmount:
+ *                         type: number
+ *                         example: 2000
+ *       400:
+ *         description: Invalid input or missing user ID
+ *       500:
+ *         description: Server error
+ */
+router.get("/monthly-summary", authMiddleware, getMonthlyIncomeSummary);
+
 
 /**
  * @swagger

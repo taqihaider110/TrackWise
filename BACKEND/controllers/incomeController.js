@@ -175,6 +175,51 @@ exports.getIncomeCategories = async (req, res) => {
   }
 };
 
+// Get monthly income summary and category breakdown
+exports.getMonthlyIncomeSummary = async (req, res) => {
+  try {
+    const { month, year } = req.query;
+
+    if (!req.user || !req.user.id) {
+      return res.status(400).json({ error: "User ID is missing" });
+    }
+
+    if (!month || !year) {
+      return res.status(400).json({ error: "Month and Year are required" });
+    }
+
+    const startDate = new Date(year, month - 1, 1);
+    const endDate = new Date(year, month, 0); // Last day of the month
+
+    const where = {
+      userId: req.user.id,
+      date: {
+        [Op.between]: [startDate, endDate],
+      },
+    };
+
+    // Total income for the month
+    const totalIncome = await Income.sum('amount', { where });
+
+    // Breakdown by category
+    const categoryBreakdown = await Income.findAll({
+      attributes: ['category', [sequelize.fn('SUM', sequelize.col('amount')), 'totalAmount']],
+      where,
+      group: ['category'],
+      order: [[sequelize.fn('SUM', sequelize.col('amount')), 'DESC']],
+      raw: true,
+    });
+
+    res.status(200).json({
+      totalIncome,
+      categoryBreakdown,
+    });
+  } catch (error) {
+    console.error("Error fetching monthly income summary:", error);
+    res.status(500).json({ error: "Server error" });
+  }
+};
+
 //12 months income summary
 exports.getPast12MonthsIncome = async (req, res) => {
   try {

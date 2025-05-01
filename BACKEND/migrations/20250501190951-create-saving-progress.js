@@ -2,39 +2,39 @@
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up (queryInterface, Sequelize) {
-    // Create the 'Goals' table
-    await queryInterface.createTable('Goals', {
+  async up(queryInterface, Sequelize) {
+    await queryInterface.createTable('SavingsProgress', {
       id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
       },
-      userId: {
+      goalId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'Users',
+          model: 'Goals',
           key: 'id',
         },
         onDelete: 'CASCADE',
       },
-      title: {
-        type: Sequelize.STRING,
+      userId: {  // Add the userId column
+        type: Sequelize.INTEGER,
         allowNull: false,
+        references: {
+          model: 'Users', // Assuming you have a Users table
+          key: 'id',
+        },
+        onDelete: 'CASCADE',
       },
-      targetAmount: {
+      savedAmount: {
         type: Sequelize.FLOAT,
         allowNull: false,
       },
-      deadline: {
+      date: {
         type: Sequelize.DATE,
-        allowNull: false,
-      },
-      description: {
-        type: Sequelize.STRING,
-        allowNull: true,
+        defaultValue: Sequelize.NOW,
       },
       createdAt: {
         type: Sequelize.DATE,
@@ -49,8 +49,7 @@ module.exports = {
     });
   },
 
-  async down (queryInterface, Sequelize) {
-    // Drop the 'Goals' table if rolling back the migration
-    await queryInterface.dropTable('Goals');
+  async down(queryInterface, Sequelize) {
+    await queryInterface.dropTable('SavingsProgress');
   }
 };
