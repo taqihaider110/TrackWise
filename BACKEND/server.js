@@ -18,10 +18,11 @@ console.log(`🔧 Running in ${NODE_ENV.toUpperCase()} mode`);
 // 🛡️ CORS Setup
 // ------------------------
 const allowedOrigins = [
-  process.env.CORS_ORIGIN, // Production frontend
-  'http://localhost:4200', // Local frontend (development)
-  'http://localhost:10000',// Swagger UI (if it's running on port 10000)
-  'https://ai-finance-tracker-ko8v.onrender.com',
+  process.env.CORS_ORIGIN,        // Production frontend
+  'http://localhost:4200',        // Angular frontend dev
+  'http://localhost:10000',       // Swagger UI if separate
+  'http://127.0.0.1:5000',        // AI Flask backend
+  'https://ai-finance-tracker-ko8v.onrender.com', // Backend on Render
 ];
 
 const corsOptions = {
@@ -92,7 +93,7 @@ app.use('/api/v1/expenses', require('./routes/expenseRoutes'));
 app.use('/api/v1/incomes', require('./routes/incomeRoutes'));
 app.use('/api/v1/goals', require('./routes/goalRoutes'));
 app.use('/api/v1/savings', require('./routes/savingsProgressRoutes'));
-// app.use('/api/v1/predictions', require('./routes/predictionRoutes'));
+app.use('/api/v1/predictions', require('./routes/aiModelRoutes'));
 
 // ------------------------
 // 🔗 Connect to DB and Start server
