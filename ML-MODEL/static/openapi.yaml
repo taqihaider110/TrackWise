@@ -1,0 +1,107 @@
+openapi: 3.0.0
+info:
+  title: AI-Driven Finance Tracker API
+  description: API for expense categorization and forecasting, goal prediction, recommendation of Budget.
+  version: 1.0.0
+paths:
+  /api/v1/predict-category:
+    post:
+      summary: Predict Expense Category
+      description: Predict the category of an expense based on the description.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                description:
+                  type: string
+              required:
+                - description
+      responses:
+        '200':
+          description: Prediction successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  category:
+                    type: string
+        '400':
+          description: Missing description
+
+  /api/v1/forecast-expense:
+    post:
+      summary: Forecast Next Month's Expense
+      description: Forecast next month's expense based on historical data.
+      responses:
+        '200':
+          description: Forecast successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  predicted_expense:
+                    type: number
+                    format: float
+        '404':
+          description: No expenses found
+
+  /api/v1/predict-goal-achievement:
+    post:
+      summary: Predict Goal Achievement
+      description: Predict if a savings goal will be achieved.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                goal_id:
+                  type: integer
+              required:
+                - goal_id
+      responses:
+        '200':
+          description: Goal achievement prediction successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  goal_achieved:
+                    type: boolean
+        '400':
+          description: Missing goal ID
+        '404':
+          description: Goal or progress data not found
+
+  /api/v1/recommend-budget:
+    post:
+      summary: Recommend Budget Category
+      description: Recommend a budget category based on the given amount.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: number
+                  format: float
+              required:
+                - amount
+      responses:
+        '200':
+          description: Budget recommendation successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  recommended_budget_category:
+                    type: integer
+        '400':
+          description: Missing amount

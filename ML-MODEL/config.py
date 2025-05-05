@@ -1,0 +1,8 @@
+DB_USERNAME = "avnadmin"
+DB_PASSWORD = "AVNS_gJPeXSYGNdhR4zX3xf1"
+DB_NAME = "defaultdb"
+DB_HOST = "postgress-123-taqihaider591-e73f.j.aivencloud.com"
+DB_PORT = 25745
+
+SQLALCHEMY_DATABASE_URI = f"postgresql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+SQLALCHEMY_TRACK_MODIFICATIONS = False

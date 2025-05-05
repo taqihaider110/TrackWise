@@ -1,0 +1,63 @@
+<!-- templates/swaggerui.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AI-Driven Finance Tracker API Docs</title>
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='swagger-ui/favicon-32x32.png') }}">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='swagger-ui/swagger-ui.css') }}">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='swagger-ui/index.css') }}">
+  <style>
+    body {
+      margin: 0;
+      background-color: #f4f6f9;
+      font-family: "Segoe UI", sans-serif;
+    }
+    .header {
+      text-align: center;
+      padding: 20px;
+      background-color: #2c3e50;
+      color: white;
+    }
+    .header h1 {
+      margin: 0;
+      font-size: 28px;
+    }
+    .header img {
+      height: 60px;
+      vertical-align: middle;
+    }
+    #swagger-ui {
+      margin: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <!-- Optional logo -->
+    <!-- <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo"> -->
+    <h1>AI-Driven Finance Tracker API</h1>
+    <p>Interactive documentation for forecasting, categorization, and goal prediction</p>
+  </div>
+
+  <div id="swagger-ui"></div>
+
+  <script src="{{ url_for('static', filename='swagger-ui/swagger-ui-bundle.js') }}"></script>
+  <script>
+    window.onload = () => {
+      SwaggerUIBundle({
+        url: "{{ url_for('static', filename='openapi.yaml') }}",
+        dom_id: '#swagger-ui',
+        deepLinking: true,
+        displayRequestDuration: true,
+        docExpansion: "list", // Can be "none", "list", or "full"
+        defaultModelsExpandDepth: -1,
+        presets: [
+          SwaggerUIBundle.presets.apis,
+          SwaggerUIBundle.SwaggerUIStandalonePreset
+        ],
+      });
+    };
+  </script>
+</body>
+</html>

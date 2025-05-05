@@ -1,8 +1,9 @@
-flask
-pandas
-python-dotenv
-sqlalchemy
-psycopg2-binary
-scikit-learn
-joblib
-numpy
+Flask==2.2.5
+Flask-Cors==3.0.10
+Flask-SQLAlchemy==3.1.1
+psycopg2-binary==2.9.9
+
+pandas==2.2.2
+numpy==1.26.4
+scikit-learn==1.4.2
+joblib==1.4.0
