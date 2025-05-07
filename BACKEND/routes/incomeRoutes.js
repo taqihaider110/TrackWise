@@ -57,66 +57,79 @@ const router = express.Router();
  */
 router.post("/", authMiddleware, addIncome);
 
-
 /**
- * @swagger
- * /api/v1/incomes:
- *   get:
- *     summary: Get all income sources (filter by month and year, with pagination)
- *     tags: [Income]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - name: month
- *         in: query
- *         required: false
- *         schema:
- *           type: integer
- *         description: "Month to filter (1-12)"
- *       - name: year
- *         in: query
- *         required: false
- *         schema:
- *           type: integer
- *         description: "Year to filter (e.g., 2025)"
- *       - name: page
- *         in: query
- *         required: false
- *         schema:
- *           type: integer
- *         description: "Page number for pagination (default is 1)"
- *       - name: pageSize
- *         in: query
- *         required: false
- *         schema:
- *           type: integer
- *         description: "Number of records per page (default is 10)"
- *     responses:
- *       200:
- *         description: List of all income sources
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 incomes:
- *                   type: array
- *                   items:
- *                     type: object
- *                 totalIncome:
- *                   type: number
- *                 pagination:
- *                   type: object
- *                   properties:
- *                     totalRecords:
- *                       type: integer
- *                     currentPage:
- *                       type: integer
- *                     pageSize:
- *                       type: integer
- *                     totalPages:
- *                       type: integer
- */
+* @swagger
+* /api/v1/incomes:
+*   get:
+*     summary: Get all incomes (with optional month, year, and pagination)
+*     tags: [Income]
+*     security:
+*       - bearerAuth: []
+*     parameters:
+*       - name: month
+*         in: query
+*         required: false
+*         schema:
+*           type: integer
+*         description: The Month to filter incomes by (1-12)
+*       - name: year
+*         in: query
+*         required: false
+*         schema:
+*           type: integer
+*         description: The Year to filter incomes by (e.g., 2025)
+*       - name: page
+*         in: query
+*         required: false
+*         schema:
+*           type: integer
+*         description: Page number for pagination (default is 1)
+*       - name: pageSize
+*         in: query
+*         required: false
+*         schema:
+*           type: integer
+*         description: Number of records per page (default is 10)
+*     responses:
+*       200:
+*         description: A list of incomes with pagination
+*         content:
+*           application/json:
+*             schema:
+*               type: object
+*               properties:
+*                 incomes:
+*                   type: array
+*                   items:
+*                     type: object
+*                     properties:
+*                       id:
+*                         type: integer
+*                       amount:
+*                         type: number
+*                       category:
+*                         type: string
+*                       createdAt:
+*                         type: string
+*                         format: date-time
+*                 totalIncomes:
+*                   type: integer
+*                   description: Total number of income records returned
+*                 totalAmount:
+*                   type: number
+*                   description: Sum of income amounts in the result set
+*                 pagination:
+*                   type: object
+*                   properties:
+*                     totalRecords:
+*                       type: integer
+*                     currentPage:
+*                       type: integer
+*                     pageSize:
+*                       type: integer
+*                     totalPages:
+*                       type: integer
+*/
 router.get("/", authMiddleware, getIncomes);
 
 /**
@@ -189,17 +202,11 @@ router.get("/past-12-months", authMiddleware, getPast12MonthsIncome); // Add thi
  *       - name: month
  *         in: query
  *         required: true
- *         schema:
- *           type: integer
- *           example: 4
- *         description: "Month to summarize (1-12)"
+ *         description: "The month to filter by (format: MM)"
  *       - name: year
  *         in: query
  *         required: true
- *         schema:
- *           type: integer
- *           example: 2025
- *         description: "Year to summarize (e.g., 2025)"
+ *         description: "The year to filter by (e.g., 2025)"
  *     responses:
  *       200:
  *         description: Monthly income summary and breakdown by category

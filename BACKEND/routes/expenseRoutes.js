@@ -170,7 +170,30 @@ router.get("/", authMiddleware, getExpenses);
  *         description: "The year to filter by (e.g., 2025)"
  *     responses:
  *       200:
- *         description: Monthly summary with total and breakdown by category
+ *         description: Monthly expense summary and breakdown by category
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 totalExpenses:
+ *                   type: number
+ *                   example: 1450.75
+ *                 categoryBreakdown:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       category:
+ *                         type: string
+ *                         example: Groceries
+ *                       totalAmount:
+ *                         type: number
+ *                         example: 450.25
+ *       400:
+ *         description: Invalid input or missing user ID
+ *       500:
+ *         description: Server error
  */
 router.get("/monthly-summary", authMiddleware, getMonthlySummary);
 

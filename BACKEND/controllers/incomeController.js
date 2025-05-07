@@ -16,7 +16,7 @@ exports.addIncome = async (req, res) => {
     // If incomes is an array, add all the incomes
     if (Array.isArray(incomes)) {
       const newIncomes = await Income.bulkCreate(
-        incomes.map(income => ({
+        incomes.map((income) => ({
           ...income,
           userId: req.user.id, // Ensure the userId is correctly set for each income
         }))
@@ -37,65 +37,70 @@ exports.addIncome = async (req, res) => {
     });
 
     res.status(201).json(newIncome);
-
   } catch (error) {
     console.error("Error adding income:", error);
     res.status(400).json({ error: error.message });
   }
 };
 
-
 // Get all Incomes (with filtering by month + pagination)
 exports.getIncomes = async (req, res) => {
   try {
-    const { month, year, page = 1, pageSize = 10 } = req.query;
-
     if (!req.user || !req.user.id) {
       return res.status(400).json({ error: "User ID is missing" });
     }
 
-    const where = { userId: req.user.id };
+    let { month, year, page = 1, pageSize = 10 } = req.query;
+
+    const parsedPage = parseInt(page, 10);
+    const parsedPageSize = parseInt(pageSize, 10);
+
+    if (isNaN(parsedPage) || parsedPage <= 0) {
+      return res.status(400).json({ error: "Invalid page number" });
+    }
+
+    if (isNaN(parsedPageSize) || parsedPageSize <= 0) {
+      return res.status(400).json({ error: "Invalid page size" });
+    }
+
+    const offset = (parsedPage - 1) * parsedPageSize;
+
+    const whereClause = { userId: req.user.id };
 
     if (month && year) {
-      where.date = {
-        [Op.between]: [
-          new Date(year, month - 1, 1),
-          new Date(year, month, 0),
-        ],
+      const startDate = new Date(`${year}-${month}-01`);
+      const endDate = new Date(startDate);
+      endDate.setMonth(endDate.getMonth() + 1);
+
+      whereClause.date = {
+        [Op.gte]: startDate, // Greater than or equal to the first day of the month
+        [Op.lt]: endDate, // Less than the first day of the next month (end of current month)
       };
     }
 
-    const parsedPage = parseInt(page);
-    const parsedPageSize = parseInt(pageSize);
-    const offset = (parsedPage - 1) * parsedPageSize;
-
-    // Fetch paginated incomes
-    const incomes = await Income.findAll({
-      where,
-      limit: parsedPageSize,
+    const { count, rows: incomes } = await Income.findAndCountAll({
+      where: whereClause,
       offset,
-      order: [['date', 'DESC']],
+      limit: parsedPageSize,
+      order: [["date", "DESC"]],
     });
 
-    // Get total income amount
-    const totalIncome = await Income.sum('amount', { where });
-
-    // Get total count for pagination metadata
-    const totalCount = await Income.count({ where });
+    const totalAmount = await Income.sum("amount", { where: whereClause });
 
     res.status(200).json({
+      totalIncomes: count,
+      totalAmount,
       incomes,
-      totalIncome,
       pagination: {
-        totalRecords: totalCount,
+        totalRecords: count,
         currentPage: parsedPage,
         pageSize: parsedPageSize,
-        totalPages: Math.ceil(totalCount / parsedPageSize),
+        totalPages: Math.ceil(count / parsedPageSize),
       },
     });
   } catch (error) {
     console.error("Error fetching incomes:", error);
-    res.status(400).json({ error: error.message });
+    res.status(500).json({ error: "Server error while fetching incomes" });
   }
 };
 
@@ -112,7 +117,9 @@ exports.updateIncome = async (req, res) => {
 
     const income = await Income.findByPk(id);
     if (!income || income.userId !== req.user.id) {
-      return res.status(404).json({ error: "Income source not found or unauthorized" });
+      return res
+        .status(404)
+        .json({ error: "Income source not found or unauthorized" });
     }
 
     // Update the income
@@ -141,7 +148,9 @@ exports.deleteIncome = async (req, res) => {
 
     const income = await Income.findByPk(id);
     if (!income || income.userId !== req.user.id) {
-      return res.status(404).json({ error: "Income source not found or unauthorized" });
+      return res
+        .status(404)
+        .json({ error: "Income source not found or unauthorized" });
     }
 
     await income.destroy();
@@ -161,11 +170,11 @@ exports.getIncomeCategories = async (req, res) => {
 
     const categories = await Income.findAll({
       attributes: [
-        'category',
-        [sequelize.fn('SUM', sequelize.col('amount')), 'totalAmount']
+        "category",
+        [sequelize.fn("SUM", sequelize.col("amount")), "totalAmount"],
       ],
       where: { userId: req.user.id },
-      group: ['category'],
+      group: ["category"],
     });
 
     res.status(200).json(categories);
@@ -178,35 +187,45 @@ exports.getIncomeCategories = async (req, res) => {
 // Get monthly income summary and category breakdown
 exports.getMonthlyIncomeSummary = async (req, res) => {
   try {
-    const { month, year } = req.query;
-
     if (!req.user || !req.user.id) {
       return res.status(400).json({ error: "User ID is missing" });
     }
+    const { month, year } = req.query;
 
     if (!month || !year) {
       return res.status(400).json({ error: "Month and Year are required" });
     }
 
-    const startDate = new Date(year, month - 1, 1);
-    const endDate = new Date(year, month, 0); // Last day of the month
-
-    const where = {
-      userId: req.user.id,
-      date: {
-        [Op.between]: [startDate, endDate],
-      },
-    };
+    const startDate = new Date(`${year}-${month}-01`);
+    const endDate = new Date(startDate);
+    endDate.setMonth(startDate.getMonth() + 1);
 
     // Total income for the month
-    const totalIncome = await Income.sum('amount', { where });
+    const totalIncome = await Income.sum("amount", {
+      where: {
+        userId: req.user.id,
+        date: {
+          [Op.gte]: startDate, // means >= startDate
+          [Op.lt]: endDate, // means < endDate
+        },
+      },
+    });
 
     // Breakdown by category
     const categoryBreakdown = await Income.findAll({
-      attributes: ['category', [sequelize.fn('SUM', sequelize.col('amount')), 'totalAmount']],
-      where,
-      group: ['category'],
-      order: [[sequelize.fn('SUM', sequelize.col('amount')), 'DESC']],
+      attributes: [
+        "category",
+        [sequelize.fn("SUM", sequelize.col("amount")), "totalAmount"],
+      ],
+      where: {
+        userId: req.user.id,
+        date: {
+          [Op.gte]: startDate, // means >= startDate
+          [Op.lt]: endDate, // means < endDate
+        },
+      },
+      group: ["category"],
+      order: [[sequelize.fn("SUM", sequelize.col("amount")), "DESC"]],
       raw: true,
     });
 
@@ -228,9 +247,10 @@ exports.getPast12MonthsIncome = async (req, res) => {
     }
 
     const userId = req.user.id;
-
-    const endDate = moment().endOf("day"); // Include current month
-    const startDate = moment().subtract(12, "months").startOf("month"); // Start from the beginning of the month 12 months ago
+    // Set the end date to the last day of the current month
+    const endDate = moment().endOf("month");
+    // Set the start date to 11 months back from the start of the current month (total 12 months range)
+    const startDate = moment().subtract(11, "months").startOf("month");
 
     const incomes = await Income.findAll({
       where: {
@@ -247,6 +267,7 @@ exports.getPast12MonthsIncome = async (req, res) => {
     incomes.forEach((income) => {
       const m = moment(income.date);
       const key = m.format("YYYY-MM");
+
       if (!summaryMap[key]) {
         summaryMap[key] = {
           month: m.format("MMM"),

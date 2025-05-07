@@ -22,19 +22,20 @@ const allowedOrigins = [
   'http://localhost:4200',        // Angular frontend dev
   'http://localhost:10000',       // Swagger UI if separate
   'http://127.0.0.1:5000',        // AI Flask backend
+  'http://localhost:5000', 
   'https://ai-finance-tracker-ko8v.onrender.com', // Backend on Render
 ];
 
 const corsOptions = {
   origin: (origin, callback) => {
-    // Allow requests with no origin (like mobile apps or curl)
-    if (!origin) return callback(null, true);
-
-    if (allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
+    const isLocalhost = origin && origin.startsWith('http://localhost');
+    
+    // Allow no-origin requests (like curl, mobile apps)
+    if (!origin || allowedOrigins.includes(origin) || isLocalhost) {
+      return callback(null, true);
     }
+
+    return callback(new Error('Not allowed by CORS'));
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],

@@ -116,7 +116,7 @@ const getPast12MonthsExpenses = async (req, res) => {
         // Set the start date to 11 months back from the start of the current month (total 12 months range)
         const startDate = moment().subtract(11, "months").startOf("month");
 
-        // Query to get expenses in the last 12 months based on createdAt
+        // Query to get expenses in the last 12 months based on Date
         const expenses = await Expense.findAll({
             where: {
                 userId,
@@ -230,7 +230,7 @@ const getMonthlySummary = async (req, res) => {
         const endDate = new Date(startDate);
         endDate.setMonth(startDate.getMonth() + 1);
 
-        // Calculate total expenses for the selected month using createdAt
+        // Calculate total expenses for the selected month using Date
         const totalExpenses = await Expense.sum('amount', {
             where: {
                 userId: req.user.id,
@@ -241,7 +241,7 @@ const getMonthlySummary = async (req, res) => {
             },
         });
 
-        // Get breakdown by category using createdAt
+        // Get breakdown by category using Date
         const categoryBreakdown = await Expense.findAll({
             attributes: ['category', [sequelize.fn('SUM', sequelize.col('amount')), 'totalAmount']],
             where: {
