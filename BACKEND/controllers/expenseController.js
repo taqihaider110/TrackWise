@@ -40,91 +40,62 @@ const getExpenses = async (req, res) => {
             return res.status(400).json({ error: "User ID is missing" });
         }
 
-        // Get query parameters and provide defaults
-        let { month, year, page = 1, pageSize = 10 } = req.query;
+    // Extract query parameters
+    let { month, year, page = 1, pageSize = 10 } = req.query;
 
-        // Ensure page and pageSize are integers
-        const parsedPage = parseInt(page, 10);
-        const parsedLimit = parseInt(pageSize, 10);
+    // Parse page and limit
+    const parsedPage = parseInt(page, 10);
+    const parsedLimit = parseInt(pageSize, 10);
 
-        // Check for invalid parsed page or limit
-        if (isNaN(parsedPage) || parsedPage <= 0) {
-            return res.status(400).json({ error: "Invalid page number" });
-        }
-        if (isNaN(parsedLimit) || parsedLimit <= 0) {
-            return res.status(400).json({ error: "Invalid limit" });
-        }
+    if (isNaN(parsedPage) || parsedPage <= 0) {
+        return res.status(400).json({ error: "Invalid page number" });
+    }
 
-        const offset = (parsedPage - 1) * parsedLimit;
+    if (isNaN(parsedLimit) || parsedLimit <= 0) {
+        return res.status(400).json({ error: "Invalid page size" });
+    }
 
-        const whereClause = {
-            userId: req.user.id,
+    const offset = (parsedPage - 1) * parsedLimit;
+
+    const whereClause = {
+        userId: req.user.id,
+    };
+
+    // Apply month/year filter if both are provided
+    if (month && year) {
+        const startDate = new Date(`${year}-${month}-01`);
+        const endDate = new Date(startDate);
+        endDate.setMonth(endDate.getMonth() + 1);
+
+        whereClause.date = {
+            [Op.between]: [startDate, endDate],
         };
+    }
 
-        let totalExpenses = 0;
-        let totalAmount = 0;
+    // Get paginated expenses and total count
+    const { count, rows: expenses } = await Expense.findAndCountAll({
+        where: whereClause,
+        offset,
+        limit: parsedLimit,
+        order: [['date', 'DESC']],
+    });
 
-        // Filter by month and year if provided
-        if (month && year) {
-            const startDate = new Date(`${year}-${month}-01`);
-            const endDate = new Date(startDate);
-            endDate.setMonth(startDate.getMonth() + 1);
+    // Get total amount (filtered or not)
+    const totalAmount = await Expense.sum('amount', { where: whereClause });
 
-            whereClause.createdAt = {
-                [Op.between]: [startDate, endDate], // Use createdAt to filter the month/year range
-            };
-
-            // Fetch expenses and calculate the total sum for the month
-            const { count, rows: expenses } = await Expense.findAndCountAll({
-                where: whereClause,
-                offset,
-                limit: parsedLimit,
-                order: [['createdAt', 'DESC']],
-            });
-
-            // Calculate the total amount for the filtered month
-            totalAmount = await Expense.sum('amount', { where: whereClause });
-
-            // Return the paginated response with filtered total expenses and sum
-            res.status(200).json({
-                totalExpenses: count, // Count of filtered expenses (month/year)
-                totalAmount: totalAmount, // Total amount for the filtered month
-                expenses,
-                pagination: {
-                    totalRecords: count,
-                    currentPage: parsedPage,
-                    pageSize: parsedLimit,
-                    totalPages: Math.ceil(count / parsedLimit),
-                },
-            });
-
-        } else {
-            // No month/year filter provided - Fetch all expenses and return total count
-            const { count, rows: expenses } = await Expense.findAndCountAll({
-                where: whereClause,
-                offset,
-                limit: parsedLimit,
-                order: [['createdAt', 'DESC']],
-            });
-
-            // Calculate total sum of all expenses (no month/year filter)
-            totalAmount = await Expense.sum('amount', { where: whereClause });
-
-            // Return the paginated response with the total sum of all expenses
-            res.status(200).json({
-                totalExpenses: count, // Total count of all expenses
-                totalAmount: totalAmount, // Total sum of all expenses
-                expenses,
-                pagination: {
-                    totalRecords: count,
-                    currentPage: parsedPage,
-                    pageSize: parsedLimit,
-                    totalPages: Math.ceil(count / parsedLimit),
-                },
-            });
-        }
-
-    } catch (error) {
+    res.status(200).json({
+        totalExpenses: count,
+        totalAmount,
+        expenses,
+        pagination: {
+            totalRecords: count,
+            currentPage: parsedPage,
+            pageSize: parsedLimit,
+            totalPages: Math.ceil(count / parsedLimit),
+        },
+    });
+    } 
+    catch (error) {
         console.error("Error fetching expenses:", error);
         res.status(500).json({ error: "Server error while fetching expenses" });
     }
@@ -148,18 +119,19 @@ const getPast12MonthsExpenses = async (req, res) => {
         const expenses = await Expense.findAll({
             where: {
                 userId,
-                createdAt: {
-                    [Op.between]: [startDate.toDate(), endDate.toDate()],  // Filtering using createdAt
+                date: {
+                    [Op.between]: [startDate.toDate(), endDate.toDate()],
                 },
             },
-            order: [["createdAt", "DESC"]],  // Sort by createdAt instead of date
+            order: [["date", "DESC"]],
         });
 
         const summaryMap = {};
 
         expenses.forEach((expense) => {
-            const m = moment(expense.createdAt);  // Use createdAt instead of date
+            const m = moment(expense.date);
             const key = m.format("YYYY-MM");
+
             if (!summaryMap[key]) {
                 summaryMap[key] = {
                     month: m.format("MMM"),
@@ -261,7 +233,7 @@ const getMonthlySummary = async (req, res) => {
         const totalExpenses = await Expense.sum('amount', {
             where: {
                 userId: req.user.id,
-                createdAt: {
+                date: {
                     [Op.gte]: startDate,  // means >= startDate
                     [Op.lt]: endDate,     // means < endDate
                 },
@@ -273,7 +245,7 @@ const getMonthlySummary = async (req, res) => {
             attributes: ['category', [sequelize.fn('SUM', sequelize.col('amount')), 'totalAmount']],
             where: {
                 userId: req.user.id,
-                createdAt: {
+                date: {
                     [Op.gte]: startDate,  // means >= startDate
                     [Op.lt]: endDate,     // means < endDate
                 },
