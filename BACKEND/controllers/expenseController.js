@@ -34,70 +34,71 @@ const addExpenses = async (req, res) => {
     }
 };
 
+// Get paginated expenses with filtering by month/year
 const getExpenses = async (req, res) => {
     try {
-        if (!req.user || !req.user.id) {
-            return res.status(400).json({ error: "User ID is missing" });
-        }
-
-    // Extract query parameters
-    let { month, year, page = 1, pageSize = 10 } = req.query;
-
-    // Parse page and limit
-    const parsedPage = parseInt(page, 10);
-    const parsedLimit = parseInt(pageSize, 10);
-
-    if (isNaN(parsedPage) || parsedPage <= 0) {
+      if (!req.user || !req.user.id) {
+        return res.status(400).json({ error: "User ID is missing" });
+      }
+  
+      // Extract query parameters
+      let { month, year, page = 1, pageSize = 10 } = req.query;
+  
+      // Parse page and limit
+      const parsedPage = parseInt(page, 10);
+      const parsedLimit = parseInt(pageSize, 10);
+  
+      if (isNaN(parsedPage) || parsedPage <= 0) {
         return res.status(400).json({ error: "Invalid page number" });
-    }
-
-    if (isNaN(parsedLimit) || parsedLimit <= 0) {
+      }
+  
+      if (isNaN(parsedLimit) || parsedLimit <= 0) {
         return res.status(400).json({ error: "Invalid page size" });
-    }
-
-    const offset = (parsedPage - 1) * parsedLimit;
-
-    const whereClause = {
+      }
+  
+      const offset = (parsedPage - 1) * parsedLimit;
+  
+      const whereClause = {
         userId: req.user.id,
-    };
-
-    // Apply month/year filter if both are provided
-    if (month && year) {
+      };
+  
+      // Apply month/year filter if both are provided
+      if (month && year) {
         const startDate = new Date(`${year}-${month}-01`);
         const endDate = new Date(startDate);
         endDate.setMonth(endDate.getMonth() + 1);
-
+  
         whereClause.date = {
-            [Op.between]: [startDate, endDate],
+          [Op.gte]: startDate,  // Greater than or equal to the first day of the month
+          [Op.lt]: endDate,     // Less than the first day of the next month (end of current month)
         };
-    }
-
-    // Get paginated expenses and total count
-    const { count, rows: expenses } = await Expense.findAndCountAll({
+      }
+  
+      // Get paginated expenses and total count
+      const { count, rows: expenses } = await Expense.findAndCountAll({
         where: whereClause,
         offset,
         limit: parsedLimit,
         order: [['date', 'DESC']],
-    });
-
-    // Get total amount (filtered or not)
-    const totalAmount = await Expense.sum('amount', { where: whereClause });
-
-    res.status(200).json({
+      });
+  
+      // Get total amount (filtered or not)
+      const totalAmount = await Expense.sum('amount', { where: whereClause });
+  
+      res.status(200).json({
         totalExpenses: count,
         totalAmount,
         expenses,
         pagination: {
-            totalRecords: count,
-            currentPage: parsedPage,
-            pageSize: parsedLimit,
-            totalPages: Math.ceil(count / parsedLimit),
+          totalRecords: count,
+          currentPage: parsedPage,
+          pageSize: parsedLimit,
+          totalPages: Math.ceil(count / parsedLimit),
         },
-    });
-    } 
-    catch (error) {
-        console.error("Error fetching expenses:", error);
-        res.status(500).json({ error: "Server error while fetching expenses" });
+      });
+    } catch (error) {
+      console.error("Error fetching expenses:", error);
+      res.status(500).json({ error: "Server error while fetching expenses" });
     }
 };
 
