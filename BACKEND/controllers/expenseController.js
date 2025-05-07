@@ -34,7 +34,6 @@ const addExpenses = async (req, res) => {
     }
 };
 
-// Get all expenses with optional month filtering and pagination
 const getExpenses = async (req, res) => {
     try {
         if (!req.user || !req.user.id) {
@@ -62,91 +61,130 @@ const getExpenses = async (req, res) => {
             userId: req.user.id,
         };
 
+        let totalExpenses = 0;
+        let totalAmount = 0;
+
         // Filter by month and year if provided
         if (month && year) {
             const startDate = new Date(`${year}-${month}-01`);
             const endDate = new Date(startDate);
             endDate.setMonth(startDate.getMonth() + 1);
 
-            whereClause.date = {
-                [Op.between]: [startDate, endDate],
+            whereClause.createdAt = {
+                [Op.between]: [startDate, endDate], // Use createdAt to filter the month/year range
             };
+
+            // Fetch expenses and calculate the total sum for the month
+            const { count, rows: expenses } = await Expense.findAndCountAll({
+                where: whereClause,
+                offset,
+                limit: parsedLimit,
+                order: [['createdAt', 'DESC']],
+            });
+
+            // Calculate the total amount for the filtered month
+            totalAmount = await Expense.sum('amount', { where: whereClause });
+
+            // Return the paginated response with filtered total expenses and sum
+            res.status(200).json({
+                totalExpenses: count, // Count of filtered expenses (month/year)
+                totalAmount: totalAmount, // Total amount for the filtered month
+                expenses,
+                pagination: {
+                    totalRecords: count,
+                    currentPage: parsedPage,
+                    pageSize: parsedLimit,
+                    totalPages: Math.ceil(count / parsedLimit),
+                },
+            });
+
+        } else {
+            // No month/year filter provided - Fetch all expenses and return total count
+            const { count, rows: expenses } = await Expense.findAndCountAll({
+                where: whereClause,
+                offset,
+                limit: parsedLimit,
+                order: [['createdAt', 'DESC']],
+            });
+
+            // Calculate total sum of all expenses (no month/year filter)
+            totalAmount = await Expense.sum('amount', { where: whereClause });
+
+            // Return the paginated response with the total sum of all expenses
+            res.status(200).json({
+                totalExpenses: count, // Total count of all expenses
+                totalAmount: totalAmount, // Total sum of all expenses
+                expenses,
+                pagination: {
+                    totalRecords: count,
+                    currentPage: parsedPage,
+                    pageSize: parsedLimit,
+                    totalPages: Math.ceil(count / parsedLimit),
+                },
+            });
         }
 
-        // Fetch expenses with pagination
-        const { count, rows: expenses } = await Expense.findAndCountAll({
-            where: whereClause,
-            offset,
-            limit: parsedLimit,
-            order: [['date', 'DESC']],
-        });
-
-        // Return the paginated response
-        res.status(200).json({
-            totalExpenses: count, // Changed from `totalItems` to match Swagger spec
-            expenses,
-            pagination: {
-                totalRecords: count,
-                currentPage: parsedPage,
-                pageSize: parsedLimit,
-                totalPages: Math.ceil(count / parsedLimit),
-            },
-        });
     } catch (error) {
         console.error("Error fetching expenses:", error);
         res.status(500).json({ error: "Server error while fetching expenses" });
     }
 };
 
+
 const getPast12MonthsExpenses = async (req, res) => {
     try {
         if (!req.user || !req.user.id) {
             return res.status(400).json({ error: "User ID is missing" });
         }
-        
-      const userId = req.user.id;
-  
-      const endDate = moment().endOf("day"); // Include current month
-      const startDate = moment().subtract(12, "months").startOf("month");
-  
-      const expenses = await Expense.findAll({
-        where: {
-          userId,
-          date: {
-            [Op.between]: [startDate.toDate(), endDate.toDate()],
-          },
-        },
-        order: [["date", "DESC"]],
-      });
-  
-      const summaryMap = {};
-  
-      expenses.forEach((expense) => {
-        const m = moment(expense.date);
-        const key = m.format("YYYY-MM");
-        if (!summaryMap[key]) {
-          summaryMap[key] = {
-            month: m.format("MMM"),
-            year: m.year(),
-            totalAmount: 0,
-            expenseCount: 0,
-          };
-        }
-  
-        summaryMap[key].totalAmount += expense.amount;
-        summaryMap[key].expenseCount += 1;
-      });
-  
-      const sortedSummary = Object.keys(summaryMap)
-        .sort((a, b) => moment(b, "YYYY-MM") - moment(a, "YYYY-MM"))
-        .map((key) => summaryMap[key]);
-  
-      res.status(200).json(sortedSummary);
+
+        const userId = req.user.id;
+
+        // Set the end date to the last day of the current month
+        const endDate = moment().endOf("month"); 
+        // Set the start date to 11 months back from the start of the current month (total 12 months range)
+        const startDate = moment().subtract(11, "months").startOf("month");
+
+        // Query to get expenses in the last 12 months based on createdAt
+        const expenses = await Expense.findAll({
+            where: {
+                userId,
+                createdAt: {
+                    [Op.between]: [startDate.toDate(), endDate.toDate()],  // Filtering using createdAt
+                },
+            },
+            order: [["createdAt", "DESC"]],  // Sort by createdAt instead of date
+        });
+
+        const summaryMap = {};
+
+        expenses.forEach((expense) => {
+            const m = moment(expense.createdAt);  // Use createdAt instead of date
+            const key = m.format("YYYY-MM");
+            if (!summaryMap[key]) {
+                summaryMap[key] = {
+                    month: m.format("MMM"),
+                    year: m.year(),
+                    totalAmount: 0,
+                    expenseCount: 0,
+                };
+            }
+
+            summaryMap[key].totalAmount += expense.amount;
+            summaryMap[key].expenseCount += 1;
+        });
+
+        // Sort the summary data by month and year
+        const sortedSummary = Object.keys(summaryMap)
+            .sort((a, b) => moment(b, "YYYY-MM") - moment(a, "YYYY-MM"))
+            .map((key) => summaryMap[key]);
+
+        res.status(200).json(sortedSummary);
     } catch (error) {
-      console.error("Error generating expense summary:", error);
-      res.status(500).json({ message: "Internal server error" });
+        console.error("Error generating expense summary:", error);
+        res.status(500).json({ message: "Internal server error" });
     }
 };
+
 
 
 // Update an expense
@@ -219,29 +257,30 @@ const getMonthlySummary = async (req, res) => {
         const endDate = new Date(startDate);
         endDate.setMonth(startDate.getMonth() + 1);
 
-        // Calculate total expenses for the selected month
+        // Calculate total expenses for the selected month using createdAt
         const totalExpenses = await Expense.sum('amount', {
             where: {
                 userId: req.user.id,
-                date: {
-                    [Op.between]: [startDate, endDate],
+                createdAt: {
+                    [Op.gte]: startDate,  // means >= startDate
+                    [Op.lt]: endDate,     // means < endDate
                 },
             },
         });
 
-        // Get breakdown by category
+        // Get breakdown by category using createdAt
         const categoryBreakdown = await Expense.findAll({
             attributes: ['category', [sequelize.fn('SUM', sequelize.col('amount')), 'totalAmount']],
             where: {
                 userId: req.user.id,
-                date: {
-                    [Op.between]: [startDate, endDate],
+                createdAt: {
+                    [Op.gte]: startDate,  // means >= startDate
+                    [Op.lt]: endDate,     // means < endDate
                 },
             },
             group: ['category'],
             raw: true,
         });
-
         res.status(200).json({
             totalExpenses,
             categoryBreakdown,

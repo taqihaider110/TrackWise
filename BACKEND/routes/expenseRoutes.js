@@ -56,6 +56,7 @@ const router = express.Router();
  */
 router.post("/", authMiddleware, addExpenses);
 
+
 /**
  * @swagger
  * /api/v1/expenses:
@@ -91,7 +92,7 @@ router.post("/", authMiddleware, addExpenses);
  *         description: "Number of records per page. Default is 10"
  *     responses:
  *       200:
- *         description: List of all expenses
+ *         description: List of all expenses along with total sum for the filtered month
  *         content:
  *           application/json:
  *             schema:
@@ -101,8 +102,22 @@ router.post("/", authMiddleware, addExpenses);
  *                   type: array
  *                   items:
  *                     type: object
- *                 totalExpenses:  # Ensure this matches the controller's response
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                       amount:
+ *                         type: number
+ *                       category:
+ *                         type: string
+ *                       createdAt:
+ *                         type: string
+ *                         format: date-time
+ *                 totalExpenses:
+ *                   type: integer
+ *                   description: "Total count of expenses for the filtered month"
+ *                 totalAmount:
  *                   type: number
+ *                   description: "Total sum of expenses for the filtered month"
  *                 pagination:
  *                   type: object
  *                   properties:
@@ -114,8 +129,27 @@ router.post("/", authMiddleware, addExpenses);
  *                       type: integer
  *                     totalPages:
  *                       type: integer
+ *       400:
+ *         description: Bad request (invalid parameters)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
  */
 router.get("/", authMiddleware, getExpenses);
+
 
 /**
  * @swagger
