@@ -3,7 +3,7 @@ const { DataTypes } = require("sequelize");
 const User = require("./User");
 
 const Profile = sequelize.define("Profile", {
-  name: {
+  full_name: {
     type: DataTypes.STRING,
     allowNull: false,
   },
@@ -30,6 +30,34 @@ const Profile = sequelize.define("Profile", {
       model: "User", // ✅ Correct table name
       key: "id",
     },
+  },
+  firstname: {
+    type: DataTypes.STRING,
+    allowNull: false,  // Non-nullable as it's a critical field
+  },
+  lastname: {
+    type: DataTypes.STRING,
+    allowNull: false,  // Non-nullable as it's a critical field
+  },
+  phone_no: {
+    type: DataTypes.STRING,
+    allowNull: true,  // Nullable as it's optional
+  },
+  country: {
+    type: DataTypes.STRING,
+    allowNull: true,  // Nullable as it's optional
+  },
+  state: {
+    type: DataTypes.STRING,
+    allowNull: true,  // Nullable as it's optional
+  },
+  city: {
+    type: DataTypes.STRING,
+    allowNull: true,  // Nullable as it's optional
+  },
+  full_address: {
+    type: DataTypes.STRING,
+    allowNull: true,  // Nullable as it's optional
   },
 }, {
   timestamps: true,
