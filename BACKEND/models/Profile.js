@@ -3,68 +3,52 @@ const { DataTypes } = require("sequelize");
 const User = require("./User");
 
 const Profile = sequelize.define("Profile", {
-  full_name: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  gender: {
-    type: DataTypes.ENUM("Male", "Female", "Other"),
-    allowNull: false,
-  },
   dob: {
     type: DataTypes.DATE,
-    allowNull: false,
-  },
-  initialIncome: {
-    type: DataTypes.FLOAT,
-    allowNull: false,
-  },
-  initialExpense: {
-    type: DataTypes.FLOAT,
     allowNull: false,
   },
   userId: {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: "User", // ✅ Correct table name
+      model: "User",
       key: "id",
     },
   },
   firstname: {
     type: DataTypes.STRING,
-    allowNull: false,  // Non-nullable as it's a critical field
+    allowNull: false,
   },
   lastname: {
     type: DataTypes.STRING,
-    allowNull: false,  // Non-nullable as it's a critical field
+    allowNull: false,
   },
   phone_no: {
     type: DataTypes.STRING,
-    allowNull: true,  // Nullable as it's optional
+    allowNull: false, // Changed to non-nullable
   },
   country: {
     type: DataTypes.STRING,
-    allowNull: true,  // Nullable as it's optional
+    allowNull: true,
   },
   state: {
     type: DataTypes.STRING,
-    allowNull: true,  // Nullable as it's optional
+    allowNull: true,
   },
   city: {
     type: DataTypes.STRING,
-    allowNull: true,  // Nullable as it's optional
+    allowNull: true,
   },
   full_address: {
     type: DataTypes.STRING,
-    allowNull: true,  // Nullable as it's optional
+    allowNull: true,
   },
 }, {
   timestamps: true,
   tableName: "Profiles",
 });
 
-// ✅ Associations
+// Associations
 User.hasOne(Profile, { foreignKey: "userId" });
 Profile.belongsTo(User, { foreignKey: "userId" });
 
