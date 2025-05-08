@@ -89,7 +89,7 @@ app.get('/', (req, res) => {
 app.use('/api/v1/auth', require('./routes/authRoutes'));
 app.use('/api/v1/landing', require('./routes/landingRoutes'));
 app.use('/api/v1/dashboard', require('./routes/dashboardRoutes'));
-app.use('/api/v1/profile', require('./routes/profileRoutes'));
+app.use('/api/v1', require('./routes/profileRoutes'));
 app.use('/api/v1/expenses', require('./routes/expenseRoutes'));
 app.use('/api/v1/incomes', require('./routes/incomeRoutes'));
 app.use('/api/v1/goals', require('./routes/goalRoutes'));

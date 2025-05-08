@@ -1,11 +1,11 @@
 const express = require("express");
 const {
-  saveProfile,
+  registerProfile,
   getProfile,
   createBaseProfile,
-  saveOrUpdateOptionalProfileDetails,
-  getBaseProfileFields,
-  getOptionalProfileFields,
+  getBaseProfile,
+  saveOrUpdateProfileAddress,
+  getProfileAddress,
 } = require("../controllers/profileController");
 const authMiddleware = require("../middlewares/authMiddleware");
 
@@ -20,10 +20,10 @@ const router = express.Router();
 
 /**
  * @swagger
- * /api/v1/profile:
+ * /api/v1/user/profile:
  *   post:
  *     summary: Create or update user profile
- *     tags: [Profile]
+ *     tags: [User Profile]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -33,21 +33,13 @@ const router = express.Router();
  *           schema:
  *             type: object
  *             properties:
- *               full_name:
- *                 type: string
- *               gender:
- *                 type: string
- *               dob:
- *                 type: string
- *                 format: date
- *               initialIncome:
- *                 type: number
- *               initialExpense:
- *                 type: number
  *               firstname:
  *                 type: string
  *               lastname:
  *                 type: string
+ *               dob:
+ *                 type: string
+ *                 format: date
  *               phone_no:
  *                 type: string
  *               country:
@@ -59,72 +51,41 @@ const router = express.Router();
  *               full_address:
  *                 type: string
  *             required:
- *               - full_name
- *               - gender
- *               - dob
- *               - initialIncome
- *               - initialExpense
  *               - firstname
  *               - lastname
+ *               - dob
+ *               - phone_no
  *     responses:
  *       200:
  *         description: Profile saved or updated
  *       400:
  *         description: Invalid request
  */
-router.post("/profile", authMiddleware, saveProfile);
+router.post("/user/profile", authMiddleware, registerProfile);
+
 
 /**
  * @swagger
- * /api/v1/profile:
+ * /api/v1/user/profile:
  *   get:
- *     summary: Get user profile
- *     tags: [Profile]
+ *     summary: Get user profile with account info
+ *     tags: [User Profile]
  *     security:
  *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: User profile retrieved successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 full_name:
- *                   type: string
- *                 gender:
- *                   type: string
- *                 dob:
- *                   type: string
- *                   format: date
- *                 initialIncome:
- *                   type: number
- *                 initialExpense:
- *                   type: number
- *                 firstname:
- *                   type: string
- *                 lastname:
- *                   type: string
- *                 phone_no:
- *                   type: string
- *                 country:
- *                   type: string
- *                 state:
- *                   type: string
- *                 city:
- *                   type: string
- *                 full_address:
- *                   type: string
  *       404:
  *         description: Profile not found
  */
-router.get("/profile", authMiddleware, getProfile);
+router.get("/user/profile", authMiddleware, getProfile);
+
 
 /**
  * @swagger
- * /api/v1/profile/base:
+ * /api/v1/profile/info-details:
  *   get:
- *     summary: Get base profile fields (non-nullable)
+ *     summary: Get profile information (with username and email)
  *     tags: [Profile]
  *     security:
  *       - bearerAuth: []
@@ -134,29 +95,13 @@ router.get("/profile", authMiddleware, getProfile);
  *       404:
  *         description: Base profile not found
  */
-router.get("/base", authMiddleware, getBaseProfileFields);
+router.get("/profile/info-details", authMiddleware, getBaseProfile);
 
 /**
  * @swagger
- * /api/v1/profile/details:
- *   get:
- *     summary: Get optional profile fields (nullable)
- *     tags: [Profile]
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       200:
- *         description: Optional profile details retrieved
- *       404:
- *         description: Optional profile not found
- */
-router.get("/details", authMiddleware, getOptionalProfileFields);
-
-/**
- * @swagger
- * /api/v1/profile/createBase:
+ * /api/v1/profile/info-details:
  *   post:
- *     summary: Create the base profile fields (non-nullable)
+ *     summary: Create the profile information (non-nullable fields)
  *     tags: [Profile]
  *     security:
  *       - bearerAuth: []
@@ -167,42 +112,20 @@ router.get("/details", authMiddleware, getOptionalProfileFields);
  *           schema:
  *             type: object
  *             properties:
- *               full_name:
- *                 type: string
- *               gender:
- *                 type: string
- *                 example: Male
- *               dob:
- *                 type: string
- *                 format: date
- *               initialIncome:
- *                 type: number
- *               initialExpense:
- *                 type: number
  *               firstname:
  *                 type: string
  *               lastname:
  *                 type: string
+ *               dob:
+ *                 type: string
+ *                 format: date
  *               phone_no:
  *                 type: string
  *             required:
- *               - full_name
- *               - gender
- *               - dob
- *               - initialIncome
- *               - initialExpense
  *               - firstname
  *               - lastname
+ *               - dob
  *               - phone_no
- *           example:
- *             full_name: "Taqi Haider"
- *             gender: "Male"
- *             dob: "1992-05-08"
- *             initialIncome: 50000
- *             initialExpense: 20000
- *             firstname: "Taqi"
- *             lastname: "Haider"
- *             phone_no: "+923001234567"
  *     responses:
  *       201:
  *         description: Profile created successfully
@@ -211,14 +134,29 @@ router.get("/details", authMiddleware, getOptionalProfileFields);
  *       500:
  *         description: Internal server error
  */
-router.post("/createBase", authMiddleware, createBaseProfile);
-
+router.post("/profile/info-details", authMiddleware, createBaseProfile);
 
 /**
  * @swagger
- * /api/v1/profile/details:
+ * /api/v1/profile/address:
+ *   get:
+ *     summary: Get user's address details (nullable)
+ *     tags: [Profile]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Address details retrieved
+ *       404:
+ *         description: Address details not found
+ */
+router.get("/profile/address", authMiddleware, getProfileAddress);
+
+/**
+ * @swagger
+ * /api/v1/profile/address:
  *   put:
- *     summary: Update optional profile fields (nullable)
+ *     summary: Update user's address details
  *     tags: [Profile]
  *     security:
  *       - bearerAuth: []
@@ -229,8 +167,6 @@ router.post("/createBase", authMiddleware, createBaseProfile);
  *           schema:
  *             type: object
  *             properties:
- *               phone_no:
- *                 type: string
  *               country:
  *                 type: string
  *               state:
@@ -241,8 +177,12 @@ router.post("/createBase", authMiddleware, createBaseProfile);
  *                 type: string
  *     responses:
  *       200:
- *         description: Optional profile updated
+ *         description: User's Address details updated
+ *       400:
+ *         description: Invalid request
+ *       500:
+ *         description: Internal server error
  */
-router.put("/details", authMiddleware, saveOrUpdateOptionalProfileDetails);
+router.put("/profile/address", authMiddleware, saveOrUpdateProfileAddress);
 
 module.exports = router;
