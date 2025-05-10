@@ -1,6 +1,7 @@
 const { sequelize } = require("../config/db");
 const { DataTypes } = require("sequelize");
 const Goal = require("./Goal");
+const User = require("./User"); // Import User model
 
 const SavingsProgress = sequelize.define("SavingsProgress", {
   goalId: {
@@ -12,8 +13,12 @@ const SavingsProgress = sequelize.define("SavingsProgress", {
     },
   },
   userId: {
-    type: DataTypes.INTEGER, // Add userId to track savings per user
+    type: DataTypes.INTEGER,
     allowNull: false,
+    references: {
+      model: "Users",
+      key: "id",
+    },
   },
   month: {
     type: DataTypes.STRING, // e.g., "2025-05"
@@ -42,5 +47,7 @@ const SavingsProgress = sequelize.define("SavingsProgress", {
 // Relationships
 Goal.hasMany(SavingsProgress, { foreignKey: "goalId" });
 SavingsProgress.belongsTo(Goal, { foreignKey: "goalId" });
+User.hasMany(SavingsProgress, { foreignKey: "userId" }); // Add this relationship
+SavingsProgress.belongsTo(User, { foreignKey: "userId" }); // Add this relationship
 
 module.exports = SavingsProgress;
