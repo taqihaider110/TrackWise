@@ -60,6 +60,13 @@ module.exports = {
         defaultValue: Sequelize.NOW,
       },
     });
+    
+    // Adding a unique constraint to userId and month
+    await queryInterface.addConstraint('SavingsProgress', {
+      fields: ['userId', 'month'],
+      type: 'unique',
+      name: 'unique_user_month_constraint'
+    });
   },
 
   async down(queryInterface, Sequelize) {

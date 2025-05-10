@@ -6,7 +6,7 @@ const User = require("./User"); // Import User model
 const SavingsProgress = sequelize.define("SavingsProgress", {
   goalId: {
     type: DataTypes.INTEGER,
-    allowNull: true, // ✅ Now optional
+    allowNull: true,
     references: {
       model: "Goals",
       key: "id",
@@ -21,7 +21,7 @@ const SavingsProgress = sequelize.define("SavingsProgress", {
     },
   },
   month: {
-    type: DataTypes.STRING, // e.g., "2025-05"
+    type: DataTypes.STRING,
     allowNull: false,
   },
   totalIncome: {
@@ -42,6 +42,12 @@ const SavingsProgress = sequelize.define("SavingsProgress", {
 }, {
   timestamps: true,
   tableName: "SavingsProgress",
+  indexes: [
+    {
+      unique: true,
+      fields: ["userId", "month"]
+    }
+  ]
 });
 
 // Relationships

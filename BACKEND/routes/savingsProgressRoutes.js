@@ -28,13 +28,13 @@ const router = express.Router();
  *         name: page
  *         schema:
  *           type: integer
- *           default: 1
+ *           default: 5
  *         description: Page number for pagination
  *       - in: query
  *         name: pageSize
  *         schema:
  *           type: integer
- *           default: 10
+ *           default: 25
  *         description: Number of records per page
  *       - in: query
  *         name: month

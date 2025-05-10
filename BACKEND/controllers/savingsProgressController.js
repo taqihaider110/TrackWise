@@ -1,7 +1,7 @@
 const SavingsProgress = require("../models/SavingsProgress");
 const Income = require("../models/Income");
 const Expense = require("../models/Expense");
-const { Op } = require("sequelize");
+const { Op, fn, col, literal } = require("sequelize");
 const { startOfMonth, endOfMonth, format, subMonths } = require("date-fns");
 
 // Controller to fetch all savings for the user with pagination
@@ -14,16 +14,17 @@ exports.getAllSavingsForUser = async (req, res) => {
     // 1. Get all distinct months with income or expense
     const [incomeMonths, expenseMonths] = await Promise.all([
       Income.findAll({
-        attributes: [[fn("DISTINCT", fn("DATE_FORMAT", col("date"), "%Y-%m")), "month"]],
+        attributes: [[literal(`TO_CHAR("date", 'YYYY-MM')`), "month"]],
         where: { userId },
         raw: true
       }),
       Expense.findAll({
-        attributes: [[fn("DISTINCT", fn("DATE_FORMAT", col("date"), "%Y-%m")), "month"]],
+        attributes: [[literal(`TO_CHAR("date", 'YYYY-MM')`), "month"]],
         where: { userId },
         raw: true
       })
     ]);
+
 
     const allMonthsSet = new Set();
     incomeMonths.forEach(m => allMonthsSet.add(m.month));
@@ -190,7 +191,6 @@ exports.getPast12MonthsSavings = async (req, res) => {
         totalIncome: income || 0,
         totalExpense: expense || 0,
         savings,
-        createdAt: new Date(),
         updatedAt: new Date(),
       });
 
