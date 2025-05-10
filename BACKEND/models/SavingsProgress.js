@@ -5,25 +5,41 @@ const Goal = require("./Goal");
 const SavingsProgress = sequelize.define("SavingsProgress", {
   goalId: {
     type: DataTypes.INTEGER,
-    allowNull: false,
+    allowNull: true, // ✅ Now optional
     references: {
       model: "Goals",
       key: "id",
     },
   },
-  savedAmount: {
-    type: DataTypes.FLOAT,
+  userId: {
+    type: DataTypes.INTEGER, // Add userId to track savings per user
     allowNull: false,
   },
-  date: {
-    type: DataTypes.DATE,
-    defaultValue: DataTypes.NOW,
+  month: {
+    type: DataTypes.STRING, // e.g., "2025-05"
+    allowNull: false,
+  },
+  totalIncome: {
+    type: DataTypes.FLOAT,
+    allowNull: false,
+    defaultValue: 0,
+  },
+  totalExpense: {
+    type: DataTypes.FLOAT,
+    allowNull: false,
+    defaultValue: 0,
+  },
+  savings: {
+    type: DataTypes.FLOAT,
+    allowNull: false,
+    defaultValue: 0,
   },
 }, {
   timestamps: true,
   tableName: "SavingsProgress",
 });
 
+// Relationships
 Goal.hasMany(SavingsProgress, { foreignKey: "goalId" });
 SavingsProgress.belongsTo(Goal, { foreignKey: "goalId" });
 

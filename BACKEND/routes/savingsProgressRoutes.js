@@ -1,10 +1,8 @@
 const express = require("express");
 const {
-  createSavingsProgress,
-  getSavingsProgress,
-  getSavingsProgressById,
-  updateSavingsProgress,
-  deleteSavingsProgress,
+  getAllSavingsForUser,
+  getMonthlySavingProgress,
+  getPast12MonthsSavings,
 } = require("../controllers/savingsProgressController");
 const authMiddleware = require("../middlewares/authMiddleware");
 
@@ -20,150 +18,77 @@ const router = express.Router();
 /**
  * @swagger
  * /api/v1/savings-progress:
- *   post:
- *     summary: Create a new savings progress
- *     tags: [Savings Progress]
- *     security:
- *       - bearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               goalId:
- *                 type: integer
- *               amountSaved:
- *                 type: number
- *               progressDate:
- *                 type: string
- *                 format: date
- *               description:
- *                 type: string
- *             required:
- *               - goalId
- *               - amountSaved
- *               - progressDate
- *     responses:
- *       201:
- *         description: Savings progress created successfully
- *       400:
- *         description: Invalid request data
- */
-router.post("/", authMiddleware, createSavingsProgress);
-
-/**
- * @swagger
- * /api/v1/savings-progress:
  *   get:
- *     summary: Get all savings progress for the user
+ *     summary: Get paginated savings records for a user by month
  *     tags: [Savings Progress]
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *         description: Page number for pagination
+ *       - in: query
+ *         name: pageSize
+ *         schema:
+ *           type: integer
+ *           default: 10
+ *         description: Number of records per page
+ *       - in: query
+ *         name: month
+ *         required: false
+ *         schema:
+ *           type: string
+ *           format: yyyy-MM
+ *         description: Month in yyyy-MM format (e.g., 2025-05)
  *     responses:
  *       200:
- *         description: List of user savings progress
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 type: object
+ *         description: Paginated savings records
  *       400:
- *         description: Failed to fetch savings progress
+ *         description: Invalid input or request
  */
-router.get("/", authMiddleware, getSavingsProgress);
+router.get("/", authMiddleware, getAllSavingsForUser);
 
 /**
  * @swagger
- * /api/v1/savings-progress/{id}:
+ * /api/v1/savings-progress/monthly:
  *   get:
- *     summary: Get a specific savings progress by ID
+ *     summary: Get net savings (income - expense) for a given month and update record
  *     tags: [Savings Progress]
  *     security:
  *       - bearerAuth: []
  *     parameters:
- *       - in: path
- *         name: id
- *         required: true
+ *       - in: query
+ *         name: month
+ *         required: false
  *         schema:
- *           type: integer
- *         description: The ID of the savings progress to retrieve
+ *           type: string
+ *           format: yyyy-MM
+ *         description: Month in yyyy-MM format (e.g., 2025-05)
  *     responses:
  *       200:
- *         description: Savings progress details
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *       404:
- *         description: Savings progress not found
- */
-router.get("/:id", authMiddleware, getSavingsProgressById);
-
-/**
- * @swagger
- * /api/v1/savings-progress/{id}:
- *   put:
- *     summary: Update a savings progress by ID
- *     tags: [Savings Progress]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *         description: The ID of the savings progress to update
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               goalId:
- *                 type: integer
- *               amountSaved:
- *                 type: number
- *               progressDate:
- *                 type: string
- *                 format: date
- *               description:
- *                 type: string
- *     responses:
- *       200:
- *         description: Savings progress updated successfully
+ *         description: Net savings for the specified month
  *       400:
- *         description: Invalid request data
- *       404:
- *         description: Savings progress not found
+ *         description: Invalid input or request
  */
-router.put("/:id", authMiddleware, updateSavingsProgress);
+router.get("/monthly", authMiddleware, getMonthlySavingProgress);
 
 /**
  * @swagger
- * /api/v1/savings-progress/{id}:
- *   delete:
- *     summary: Delete a savings progress by ID
+ * /api/v1/savings-progress/past-12-months:
+ *   get:
+ *     summary: Get savings progress for the past 12 months and update history
  *     tags: [Savings Progress]
  *     security:
  *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *         description: The ID of the savings progress to delete
  *     responses:
  *       200:
- *         description: Savings progress deleted successfully
- *       404:
- *         description: Savings progress not found
+ *         description: List of savings progress for each month in the past year
+ *       400:
+ *         description: Failed to fetch data
  */
-router.delete("/:id", authMiddleware, deleteSavingsProgress);
+router.get("/past-12-months", authMiddleware, getPast12MonthsSavings);
 
 module.exports = router;

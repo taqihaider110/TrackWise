@@ -4,42 +4,47 @@ module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.bulkInsert('SavingsProgress', [
       {
-        goalId: 1,
         userId: 1, // Added userId for association
-        savedAmount: 30000,
-        date: '2025-04-01',
+        month: '2025-04',  // Month field added
+        totalIncome: 50000, // Example total income
+        totalExpense: 20000, // Example total expense
+        savings: 30000, // Example savings
         createdAt: new Date(),
         updatedAt: new Date(),
       },
       {
-        goalId: 1,
         userId: 1, // Added userId for association
-        savedAmount: 20000,
-        date: '2025-04-15',
+        month: '2025-04',  // Month field added
+        totalIncome: 50000, // Example total income
+        totalExpense: 20000, // Example total expense
+        savings: 20000, // Example savings
         createdAt: new Date(),
         updatedAt: new Date(),
       },
       {
-        goalId: 2,
         userId: 1, // Added userId for association
-        savedAmount: 50000,
-        date: '2025-03-25',
+        month: '2025-03',  // Month field added
+        totalIncome: 70000, // Example total income
+        totalExpense: 20000, // Example total expense
+        savings: 50000, // Example savings
         createdAt: new Date(),
         updatedAt: new Date(),
       },
       {
-        goalId: 3,
         userId: 2, // Added userId for association
-        savedAmount: 25000,
-        date: '2025-03-30',
+        month: '2025-03',  // Month field added
+        totalIncome: 60000, // Example total income
+        totalExpense: 35000, // Example total expense
+        savings: 25000, // Example savings
         createdAt: new Date(),
         updatedAt: new Date(),
       },
       {
-        goalId: 3,
         userId: 2, // Added userId for association
-        savedAmount: 15000,
-        date: '2025-04-10',
+        month: '2025-04',  // Month field added
+        totalIncome: 60000, // Example total income
+        totalExpense: 45000, // Example total expense
+        savings: 15000, // Example savings
         createdAt: new Date(),
         updatedAt: new Date(),
       },
