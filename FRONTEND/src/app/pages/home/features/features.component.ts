@@ -11,38 +11,38 @@ export class FeaturesComponent {
   features = [
     {
       icon: 'assets/icons/graph.svg',
-      title: 'AI-Powered Expense Tracking',
+      title: 'Effortless Expense Tracking',
       points: [
-        'Automatically categorizes your expenses using NLP.',
-        'Sync your bank accounts or manually upload transactions.'
+        'Manually add or import your daily expenses with ease.',
+        'Categorize transactions to see exactly where your money goes.'
       ]
     },
     {
       icon: 'assets/icons/bulb.svg',
-      title: 'Smart Budgeting with AI Insights',
+      title: 'Smart Budget Planning',
       points: [
-        'Set custom budgets for different spending categories.',
-        'Get real-time alerts when you exceed your budget.'
+        'Set monthly budgets by category and track your spending in real-time.',
+        'Get notified when you’re nearing your limits.'
       ]
     },
     {
       icon: 'assets/icons/machine-brain.svg',
-      title: 'Predict Future Expenses with Machine Learning',
+      title: 'Monthly Savings Progress',
       points: [
-        'AI analyzes past spending trends to predict upcoming expenses.',
-        'Stay prepared with custom savings suggestions.'
+        'Track your savings goals and monitor monthly progress.',
+        'See how much you’ve saved versus what you planned.'
       ]
     },
     {
       icon: 'assets/icons/data-visual.svg',
-      title: 'Interactive Data Visualization',
+      title: 'Secure and User-Friendly',
       points: [
-        'View real-time graphs and reports to track income, expenses, and savings.',
-        'Filter spending data by category, time period, or transaction type.'
+        'Your data is protected with end-to-end encryption.',
+        'Simple and intuitive interface designed for everyone.'
       ]
     },
     {
-      icon: '🔹',
+      icon: 'assets/icons/lock.svg',
       title: 'Secure and Easy-to-Use',
       points: [
         'Bank-level encryption and security to protect your financial data.',
