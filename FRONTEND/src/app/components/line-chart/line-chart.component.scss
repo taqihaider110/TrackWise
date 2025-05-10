@@ -1,0 +1,43 @@
+.g-container {
+  height: 350px;
+  width: 100%;
+  max-width: 1000px;
+  background-color: black;
+  box-shadow: 0 2px 15px 10px #0606066c;
+  border-radius: 16px;
+  padding: 20px;
+}
+
+.button-2 {
+  border: 1px solid #02EA77;
+  text-align: center;
+  padding: 2px 10px;
+  max-width: fit-content;
+  border-radius: 50px;
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  font-size: clamp(0.9rem, 2vw, 1rem);
+  color: #ffffff;
+  background-color: transparent;
+  transition: all 0.3s ease;
+
+  .flex {
+    align-items: center;
+  }
+
+  &:hover {
+    background-color: #474747; // light gray
+    color: #02EA77; // text to green (same as base)
+    border: 1px solid #fff; // border to white
+
+    // You may want to also apply color to children (like the image stays same)
+    img {
+      filter: brightness(0) saturate(100%) invert(38%) sepia(88%) saturate(1441%) hue-rotate(109deg) brightness(130%) contrast(96%);
+      // this makes the arrow icon green-ish, optional
+    }
+  }
+}
+
+.text-outline{
+  font-size: clamp(0.9rem, 2vw, 1rem);
+}

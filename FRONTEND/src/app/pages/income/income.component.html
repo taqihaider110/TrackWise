@@ -1,6 +1,119 @@
 <div class="page-wrapper">
   <app-header></app-header>
   <app-breadcrumb [text]="'Income'"></app-breadcrumb>
-  <app-side-bar></app-side-bar>
+
+  <div class="flex flex-row mt-10">
+    <app-side-bar></app-side-bar>
+
+    <div class="flex flex-col flex-1 pr-10">
+      <!-- Graph Section -->
+      <div class="ml-15 g-container">
+        <app-line-chart
+          [chartData]="incomeChartData"
+          [label]="'Recent Income'"
+        ></app-line-chart>
+      </div>
+
+      <div class="flex flex-row ml-15 my-6 gap-6">
+        <div class="pc-container">
+          <!-- Income Pie Chart -->
+          <app-pie-chart
+            [pieChartData]="incomePieChartData"
+            [currentMonthName]="monthNames[currentMonthIndex]"
+            [currentYear]="currentYear"
+            [isIncome]="true"
+            (monthChanged)="handleMonthChange($event)"
+          ></app-pie-chart>
+        </div>
+
+        <!-- Total Income Card -->
+        <div class="total-income-card">
+          <div class="card-box">
+            <div class="card-header">
+              <div class="card-title poppins-medium">Total Income</div>
+              <p class="card-subtitle poppins-small">
+                {{ monthNames[currentMonthIndex] }} {{ currentYear }}
+              </p>
+            </div>
+            <div class="card-body">
+              <div class="total-amount">
+                <span class="currency poppins-small">Rs</span>
+                <span class="amount poppins-heading">{{ totalMonthlyIncome | number }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Income Section -->
+      <div class="recent-income py-10">
+        <div class="recent-income-header flex flex-row justify-between items-center pl-15 pb-4">
+          <!-- Left: Month and Year Selector -->
+          <div class="month-year-selector poppins-small">
+            <label for="monthYear">Select Month and Year:</label>
+            <input
+              id="monthYear"
+              type="month"
+              [(ngModel)]="selectedMonthYear"
+              (change)="onDateChange()"
+            />
+          </div>
+
+          <!-- Center: Recent Income Title -->
+          <div class="text-outline">Recent Income</div>
+
+          <!-- Right: Add Income Button -->
+          <div class="add-income-button">
+            <button (click)="openAddIncomeModal()" class="button-1 poppins-small">
+              Add Income
+            </button>
+          </div>
+        </div>
+
+        <!-- Show "No Data" message if there is no income -->
+        <div *ngIf="!hasData" class="no-data poppins-small mb-4 ml-30">
+          No income found for the selected month and year.
+        </div>
+
+        <div class="line mx-auto"></div>
+
+        <!-- Show the list of income as cards if there is data -->
+        <div *ngIf="hasData" class="card-container">
+          <div *ngFor="let income of recentIncome" class="card-box">
+            <div class="card-title poppins-medium">
+              <div>{{ income.category }}</div>
+            </div>
+
+            <div class="card-body poppins-small">
+              <div class="card-row">
+                <span class="label">Amount:</span>
+                <span>Rs. {{ income.amount }}</span>
+              </div>
+              <div class="card-row">
+                <span class="label">Date:</span>
+                <span>{{ income.date }}</span>
+              </div>
+              <div class="card-row">
+                <span class="label">Source:</span>
+                <span>{{ income.source }}</span>
+              </div>
+            </div>
+
+            <div class="card-footer poppins-small">
+              <button (click)="deleteIncome(income)" class="button-2-red">Delete</button>
+              <button (click)="editIncome(income)" class="button-2-green">Edit</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex justify-center mt-6">
+          <button class="button-2 flex items-center" (click)="toggleIncome()">
+            {{ showAll ? 'See Less' : 'See All' }}
+            <img src="assets/icons/arrow-right.svg" alt="Arrow Right" class="ml-1" />
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 

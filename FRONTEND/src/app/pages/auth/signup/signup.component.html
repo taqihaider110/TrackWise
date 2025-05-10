@@ -1,4 +1,4 @@
-<div class="min-h-screen flex items-center justify-center bg-gray-900">
+<!-- <div class="min-h-screen flex items-center justify-center bg-gray-900">
   <div class="bg-white p-8 rounded-lg shadow-lg w-96">
     <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">Sign Up</h2>
 
@@ -24,5 +24,109 @@
     <div class="text-gray-600 mt-4 text-center">
       Already have an account? <div class="text-blue-500 hover:underline" (click)="gotoLogIn()">Login</div>
     </div>
+  </div>
+</div> -->
+
+<!--<input [(ngModel)]="username" placeholder="User_09" />
+<input [(ngModel)]="email" placeholder="example@mail.com" />
+<input [(ngModel)]="password" placeholder="123" />
+<input [(ngModel)]="confirmPassword" placeholder="123" />-->
+
+<!--<button (click)="signUp()">Sign Up</button>-->
+
+<!-- <button (click)="checkUser()">Login</button> -->
+
+
+<!-- <h6>{{ username }}</h6>
+<h6>{{ email }}</h6>
+<h6>{{ password }}</h6>
+<h6>{{ confirmPassword }}</h6> -->
+
+<!--<div class="signup-container">
+  <h2>Sign Up</h2>
+
+  <div class="form-group">
+    <input [(ngModel)]="username" placeholder="Username" class="form-input" />
+  </div>
+
+  <div class="form-group">
+    <input [(ngModel)]="email" placeholder="Email" class="form-input" />
+  </div>
+
+  <div class="form-group">
+    <input [(ngModel)]="password" type="password" placeholder="Password" class="form-input" />
+  </div>
+
+  <div class="form-group">
+    <input [(ngModel)]="confirmPassword" type="password" placeholder="Confirm Password" class="form-input" />
+  </div>
+
+  <button (click)="signUp()"><span>Sign Up</span></button>
+</div>-->
+<!--<div class="signup-container">
+  <h2>Sign Up</h2>
+
+  <div class="form-group">
+    <input [(ngModel)]="username" placeholder="Username" class="form-input" />
+  </div>
+
+  <div class="form-group">
+    <input [(ngModel)]="email" placeholder="Email" class="form-input" />
+  </div>
+
+  <div class="form-group">
+    <input [(ngModel)]="password" type="password" placeholder="Password" class="form-input" />
+  </div>
+
+  <div class="form-group">
+    <input [(ngModel)]="confirmPassword" type="password" placeholder="Confirm Password" class="form-input" />
+  </div>
+
+  <button (click)="signUp()"><span>Sign Up</span></button>
+
+  <div class="login-redirect">
+    Already have an account? <a routerLink="/auth/login">Login</a>
+  </div>
+</div>-->
+
+<div class="signup-container">
+  <h2>Sign Up</h2>
+
+  <div class="form-group">
+    <input [(ngModel)]="username" placeholder="Username" class="form-input" />
+  </div>
+
+  <div class="form-group">
+    <input [(ngModel)]="email" placeholder="Email" class="form-input" />
+  </div>
+
+  <div class="form-group password-group">
+    <input [(ngModel)]="password" [type]="showPassword ? 'text' : 'password'" placeholder="Password" class="form-input" />
+    <span class="password-toggle" (click)="togglePasswordVisibility()">
+      <svg class="eye-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path *ngIf="!showPassword" d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+        <circle *ngIf="!showPassword" cx="12" cy="12" r="3"></circle>
+        <path *ngIf="showPassword" d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+        <line *ngIf="showPassword" x1="1" y1="1" x2="23" y2="23"></line>
+      </svg>
+    </span>
+  </div>
+
+  <div class="form-group password-group">
+    <input [(ngModel)]="confirmPassword" [type]="showConfirmPassword ? 'text' : 'password'" placeholder="Confirm Password" class="form-input" />
+    <span class="password-toggle" (click)="toggleConfirmPasswordVisibility()">
+      <svg class="eye-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path *ngIf="!showConfirmPassword" d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+        <circle *ngIf="!showConfirmPassword" cx="12" cy="12" r="3"></circle>
+        <path *ngIf="showConfirmPassword" d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+        <line *ngIf="showConfirmPassword" x1="1" y1="1" x2="23" y2="23"></line>
+      </svg>
+    </span>
+  </div>
+
+  <button (click)="signUp()"><span>Sign Up</span></button>
+
+  <div class="login-redirect">
+    Already have an account? <a routerLink="/auth/login">Login</a>
   </div>
 </div>

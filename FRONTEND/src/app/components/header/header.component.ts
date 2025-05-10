@@ -1,24 +1,32 @@
-import { Component, Input } from '@angular/core';
-import { NavService } from '../../services/nav.service';
+import { Component} from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../../services/auth.service';
+import { Router, RouterModule} from '@angular/router';
 
 @Component({
   selector: 'app-header',
-  imports: [CommonModule],
+  imports: [CommonModule,RouterModule],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss'
 })
 export class HeaderComponent {
-  @Input() isHome!: boolean;
+  isLoggedIn: boolean = false;
 
-  constructor(private nav: NavService) {
-    this.isHome = false;
+  constructor(private authService: AuthService, private router: Router) {
   }
 
-  gotoLogIn() {
-    this.nav.push('/dashboard');
+  ngOnInit() {
+    this.isLoggedIn = this.authService.isLoggedIn();
   }
-  gotoProfile() {
-    this.nav.push('/profile');
+
+  changeStatus() {
+    if(this.isLoggedIn) {
+      this.authService.logout();
+      this.isLoggedIn = false;
+      this.router.navigate(['/home']);
+    }
+    else{
+      this.router.navigate(['/auth/login']);
+    }
   }
 }

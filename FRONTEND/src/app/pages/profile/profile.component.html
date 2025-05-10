@@ -1,6 +1,128 @@
-
 <div class="page-wrapper">
   <app-header></app-header>
   <app-breadcrumb [text]="'Profile'"></app-breadcrumb>
-  <app-side-bar></app-side-bar>
+
+  <div class="flex flex-row mt-10 gap-10 justify-center">
+    <app-side-bar></app-side-bar>
+
+    <div class="flex flex-col gap-10 w-full">
+      <div class="flex flex-row gap-10 flex-wrap justify-center">
+        <!-- Profile Card -->
+        <div class="profile-card-container">
+          <div class="section-header">
+            <h3 class="section-title poppins-medium">Profile Information</h3>
+            <div class="section-divider"></div>
+         </div>
+          <!-- <div class="profile-avatar-wrapper">
+            <img class="profile-avatar" src="assets/images/default-avatar.png" alt="Profile Picture" />
+            <div class="avatar-edit-overlay">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9
+                .5z" />
+              </svg>
+            </div>
+          </div> -->
+
+          <form [formGroup]="profileForm" class="profile-form" (ngSubmit)="saveProfileForm($event)">
+            <!-- Personal Information -->
+            <div class="form-field poppins-small">
+              <label class="field-label">First Name</label>
+              <input
+                formControlName="firstname"
+                class="modern-input"
+                [readonly]="isPersonalInfoReadOnly"
+              />
+            </div>
+            <div class="form-field poppins-small">
+              <label class="field-label">Last Name</label>
+              <input
+                formControlName="lastname"
+                class="modern-input"
+                [readonly]="isPersonalInfoReadOnly"
+              />
+            </div>
+            <div class="form-field poppins-small">
+              <label class="field-label">Date of Birth</label>
+              <input
+                type="date"
+                formControlName="dob"
+                class="modern-input"
+                [readonly]="isPersonalInfoReadOnly"
+              />
+            </div>
+            <div class="form-field poppins-small">
+              <label class="field-label">Phone Number</label>
+              <input
+                type="tel"
+                formControlName="phone_no"
+                class="modern-input"
+                [readonly]="isPersonalInfoReadOnly"
+              />
+            </div>
+            <button
+              *ngIf="!isPersonalInfoReadOnly"
+              type="submit"
+              class="modern-save-button">
+              Save Changes
+            </button>
+          </form>
+        </div>
+
+        <!-- Address Card -->
+        <div class="profile-card-container">
+          <div class="section-header">
+            <h3 class="section-title poppins-medium">Address Information</h3>
+            <div class="section-divider"></div>
+          </div>
+
+          <form [formGroup]="addressForm" class="profile-form">
+            <div class="form-field poppins-small">
+              <label class="field-label">Country</label>
+              <select
+                formControlName="country"
+                (change)="onCountrySelect($event)"
+                class="modern-select"
+              >
+                <option value="">Select Country</option>
+                <option *ngFor="let country of countryList" [value]="country">{{ country }}</option>
+              </select>
+            </div>
+            <div class="form-field poppins-small">
+              <label class="field-label">State</label>
+              <select
+                formControlName="state"
+                (change)="onStateSelect($event)"
+                class="modern-select"
+              >
+                <option value="">Select State</option>
+                <option *ngFor="let state of stateList" [value]="state">{{ state }}</option>
+              </select>
+            </div>
+            <div class="form-field poppins-small">
+              <label class="field-label">City</label>
+              <select
+                formControlName="city"
+                (change)="onCitySelect($event)"
+                class="modern-select"
+              >
+                <option value="">Select City</option>
+                <option *ngFor="let city of cityList" [value]="city">{{ city }}</option>
+              </select>
+            </div>
+            <div class="form-field poppins-small">
+              <label class="field-label">Full Address</label>
+              <textarea
+                formControlName="full_address"
+                class="modern-textarea"
+              ></textarea>
+            </div>
+            <button class="modern-save-button" (click)="saveAddressForm($event)">Save Changes</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

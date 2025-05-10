@@ -1,0 +1,25 @@
+::ng-deep .mat-mdc-dialog-surface {
+  background-color: #2a2a2a !important;
+  border-radius: 12px !important;
+  box-shadow: none !important;
+}
+
+.custom-modal-content {
+  background-color: #2a2a2a;
+  color: #ffffff;
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.custom-modal-title {
+  font-weight: bold;
+  color: #ff4d4d;
+
+}
+
+.custom-modal-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}

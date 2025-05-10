@@ -1,0 +1,77 @@
+::ng-deep .mat-mdc-dialog-surface {
+  background-color: #2a2a2a !important; // Match the dark theme background
+  border-radius: 12px !important; // Ensure the corners are rounded
+  box-shadow: none !important; // Remove any default shadow if needed
+}
+
+.custom-modal-content {
+  background-color: #2a2a2a; // Dark background
+  color: #f5f5f5; // Light text color
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+}
+
+.custom-modal-title {
+  color: #02ea77; // Accent color
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.custom-form-field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+
+  label {
+    color: #ccc;
+    margin-bottom: 5px;
+  }
+
+  input {
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #444;
+    background-color: #1e1e1e;
+    color: #f5f5f5;
+
+    &:focus {
+      outline: none;
+      border-color: #02ea77; // Accent color on focus
+    }
+  }
+}
+
+.custom-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+
+  .custom-btn-cancel {
+    background-color: #ff4d4d;
+    color: #fff;
+    padding: 8px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    border: none;
+
+    &:hover {
+      background-color: #e60000;
+    }
+  }
+
+  .custom-btn-save {
+    background-color: #4caf50;
+    color: #fff;
+    padding: 8px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    border: none;
+
+    &:hover {
+      background-color: #388e3c;
+    }
+  }
+}

@@ -1,0 +1,30 @@
+<div class="">
+  <div class="flex py-3 justify-center items-center">
+    <img
+      src="assets/icons/arrow-left.svg"
+      alt="Arrow Left"
+      class="mr-2 button-2 cursor-pointer"
+      (click)="previousMonth()"
+    />
+
+    <div class="text-outline text-lg font-semibold">{{ currentMonthName }} {{ currentYear }}</div>
+
+    <img
+      src="assets/icons/arrow-right.svg"
+      alt="Arrow Right"
+      class="ml-2 button-2"
+      [ngClass]="{
+        'opacity-40 pointer-events-none': isNextDisabled(),
+        'cursor-pointer': !isNextDisabled()
+      }"
+      (click)="!isNextDisabled() && nextMonth()"
+    />
+  </div>
+
+  <p-chart
+    type="pie"
+    [data]="pieChartData"
+    [options]="pieChartOptions"
+    style="height: 400px"
+  ></p-chart>
+</div>

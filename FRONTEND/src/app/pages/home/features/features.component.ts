@@ -10,7 +10,7 @@ import { Component } from '@angular/core';
 export class FeaturesComponent {
   features = [
     {
-      icon: '🔹',
+      icon: 'assets/icons/graph.svg',
       title: 'AI-Powered Expense Tracking',
       points: [
         'Automatically categorizes your expenses using NLP.',
@@ -18,7 +18,7 @@ export class FeaturesComponent {
       ]
     },
     {
-      icon: '🔹',
+      icon: 'assets/icons/bulb.svg',
       title: 'Smart Budgeting with AI Insights',
       points: [
         'Set custom budgets for different spending categories.',
@@ -26,7 +26,7 @@ export class FeaturesComponent {
       ]
     },
     {
-      icon: '🔹',
+      icon: 'assets/icons/machine-brain.svg',
       title: 'Predict Future Expenses with Machine Learning',
       points: [
         'AI analyzes past spending trends to predict upcoming expenses.',
@@ -34,7 +34,7 @@ export class FeaturesComponent {
       ]
     },
     {
-      icon: '🔹',
+      icon: 'assets/icons/data-visual.svg',
       title: 'Interactive Data Visualization',
       points: [
         'View real-time graphs and reports to track income, expenses, and savings.',

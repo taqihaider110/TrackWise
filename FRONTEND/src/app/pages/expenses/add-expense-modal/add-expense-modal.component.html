@@ -1,0 +1,29 @@
+<div class="custom-modal-content">
+  <div class="custom-modal-title poppins-medium">Add Expense</div>
+  <form>
+    <div class="custom-form-field poppins-small">
+      <label for="category">Category</label>
+      <input id="category" type="text" [(ngModel)]="category" name="category" />
+    </div>
+
+    <div class="custom-form-field poppins-small">
+      <label for="amount">Amount In Rs</label>
+      <input id="amount" type="number" [(ngModel)]="amount" name="amount" />
+    </div>
+
+    <div class="custom-form-field poppins-small">
+      <label for="date">Date</label>
+      <input id="date" type="date" [(ngModel)]="date" name="date" />
+    </div>
+
+    <div class="custom-form-field poppins-small">
+      <label for="description">Description</label>
+      <input id="description" type="text" [(ngModel)]="description" name="description" />
+    </div>
+  </form>
+
+  <div class="custom-modal-actions poppins-small">
+    <button class="button-2-red" (click)="onCancel()">Cancel</button>
+    <button class="button-2-green" (click)="onSave()">Save</button>
+  </div>
+</div>

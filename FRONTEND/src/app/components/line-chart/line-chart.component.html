@@ -1,0 +1,25 @@
+<div class="">
+  <div class="flex justify-between items-center mx-3 mt-2 mb-3">
+    <div class="text-outline"> {{label}}</div>
+    <div *ngIf="isDashboard">
+    <button  class="button-2" [routerLink]="routerLinkPath">
+      <div class="flex">
+        See All
+        <img
+          src="assets/icons/arrow-right.svg"
+          alt="Arrow Right"
+          class="ml-1"
+        />
+      </div>
+    </button>
+    </div>
+  </div>
+  <div class="h-full w-full">
+    <p-chart
+      type="line"
+      [data]="chartData"
+      [options]="chartOptions"
+      class="h-full w-full"
+    ></p-chart>
+  </div>
+</div>

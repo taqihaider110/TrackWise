@@ -22,7 +22,7 @@ export class SideBarComponent{
 
   gotoDashboard() {
     this.nav.push('/dashboard');
-    console.log('Navigating to Dashboard');
+    // console.log('Navigating to Dashboard');
   }
 
   gotoExpenses() {

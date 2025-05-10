@@ -11,34 +11,127 @@
     <div class="flex flex-col flex-1 pr-10">
       <div class="flex flex-col lg:flex-row gap-6">
         <div class="g-container">
-          <div class="flex justify-between items-center mx-3 mt-2 mb-3">
+          <app-line-chart
+            [routerLinkPath]="'/income'"
+            [chartData]="incomeChartData"
+            [label]="'Recent Incomes'"
+            [isDashboard]="true"
+          ></app-line-chart>
+          <!-- <div class="flex justify-between items-center mx-3 mt-2 mb-3">
             <div class="text-outline">Monthly Income</div>
             <button class="button-2" routerLink="/income">
               <div class="flex">
                 See All
-                <img src="assets/icons/arrow-right.svg" alt="Arrow Right" class="ml-1" />
+                <img
+                  src="assets/icons/arrow-right.svg"
+                  alt="Arrow Right"
+                  class="ml-1"
+                />
               </div>
             </button>
           </div>
-          <p-chart type="line" [data]="chartData" [options]="chartOptions" class="h-full w-full"></p-chart>
+          <p-chart
+            type="line"
+            [data]="chartData"
+            [options]="chartOptions"
+            class="h-full w-full"
+          ></p-chart> -->
         </div>
-        <div class="pc-container"></div>
+
+        <div class="pc-container">
+          <app-pie-chart
+            [pieChartData]="incomePieChartData"
+            [currentMonthName]="monthNames[currentMonthIndex]"
+            [currentYear]="currentYear"
+            [isIncome]="true"
+            (monthChanged)="handleMonthChange($event)"
+          ></app-pie-chart>
+          <!-- <div class="flex justify-center items-center mx-3 mt-4 mb-3">
+            <div class="flex justify-between items-center space-x-4">
+              <img
+                src="assets/icons/arrow-left.svg"
+                alt="Arrow Left"
+                class="button-2 cursor-pointer"
+                (click)="goToPreviousMonth()"
+              />
+              <div class="text-outline">{{ currentMonth }}</div>
+              <img
+                src="assets/icons/arrow-right.svg"
+                alt="Arrow Right"
+                class="button-2 py-2"
+                (click)="goToNextMonth()"
+              />
+            </div>
+          </div>
+
+          <p-chart
+            type="pie"
+            [data]="pieChartData"
+            [options]="pieChartOptions"
+            style="height: 400px"
+          ></p-chart> -->
+        </div>
       </div>
 
       <div class="flex flex-col lg:flex-row gap-6 mt-10">
         <div class="g-container lg:order-2">
-          <div class="flex justify-between items-center mx-3 mt-2 mb-3">
+          <app-line-chart
+            [routerLinkPath]="'/expenses'"
+            [chartData]="expenseChartData"
+            [label]="'Recent Expenses'"
+            [isDashboard]="true"
+          ></app-line-chart>
+          <!-- <div class="flex justify-between items-center mx-3 mt-2 mb-3">
             <div class="text-outline">Monthly Expenses</div>
             <button class="button-2" routerLink="/expenses">
               <div class="flex">
                 See All
-                <img src="assets/icons/arrow-right.svg" alt="Arrow Right" class="ml-1" />
+                <img
+                  src="assets/icons/arrow-right.svg"
+                  alt="Arrow Right"
+                  class="ml-1"
+                />
               </div>
             </button>
           </div>
-          <p-chart type="line" [data]="chartData" [options]="chartOptions" class="h-full w-full"></p-chart>
+          <p-chart
+            type="line"
+            [data]="chartData"
+            [options]="chartOptions"
+            class="h-full w-full"
+          ></p-chart> -->
         </div>
-        <div class="pc-container lg:order-1"></div>
+        <div class="pc-container lg:order-1">
+          <!-- Expense Pie Chart -->
+          <app-pie-chart
+            [pieChartData]="expensePieChartData"
+            [currentMonthName]="monthNames[currentMonthIndex]"
+            [currentYear]="currentYear"
+            [isIncome]="false"
+            (monthChanged)="handleMonthChange($event)"
+          ></app-pie-chart>
+          <!-- <div class="flex justify-center items-center mx-3 mt-4 mb-3">
+            <div class="flex justify-between">
+              <img
+                src="assets/icons/arrow-left.svg"
+                alt="Arrow Left"
+                class="mr-1 button-2"
+              />
+              <div class="text-outline">March</div>
+              <img
+                src="assets/icons/arrow-right.svg"
+                alt="Arrow Right"
+                class="ml-1 button-2"
+              />
+            </div>
+          </div>
+          <p-chart
+            type="pie"
+            [data]="pieChartData"
+            [options]="pieChartOptions"
+            style="height: 400px"
+          ></p-chart> -->
+        </div>
       </div>
     </div>
   </div>

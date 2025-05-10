@@ -1,77 +1,165 @@
-<div class="min-h-screen flex items-center justify-center bg-gray-900">
+<!-- <div class="min-h-screen flex items-center justify-center">
   <div class="flex justify-center items-center h-full w-full">
     <div class="grid gap-8">
-      <section
-        id="back-div"
-        class="bg-gradient-to-r from-blue-500 to-purple-500 rounded-3xl"
-      >
-        <div
-          class="border-8 border-transparent rounded-xl bg-white dark:bg-gray-900 shadow-xl p-8 m-2"
-        >
-          <h1
-            class="text-5xl font-bold text-center cursor-default dark:text-gray-300 text-gray-900"
-          >
+      <section id="back-div" class="rounded-3xl gradient-border">
+        <div class="border-8 rounded-xl inner-container">
+          <div class="poppins-heading text-center cursor-default">
             log in
-          </h1>
-          <form action="#" method="post" class="space-y-6">
+          </div>
+          <form (ngSubmit)="login()" class="space-y-6">
             <div>
-              <label for="email" class="block mb-2 text-lg dark:text-gray-300"
-                >Email</label
-              >
+              <label for="email" class="block mb-2 poppins-medium">Email</label>
               <input
                 id="email"
-                class="border p-3 shadow-md dark:bg-indigo-700 dark:text-gray-300 dark:border-gray-700 border-gray-300 rounded-lg w-full focus:ring-2 focus:ring-blue-500 transition transform hover:scale-105 duration-300"
-                type="email"
+                name="username"
+                class="form-input"
+                type="text"
                 placeholder="Email"
-                required=""
+                required
+                [(ngModel)]="username"
               />
             </div>
             <div>
-              <label for="password" class="block mb-2 text-lg dark:text-gray-300"
-                >Password</label
-              >
+              <label for="password" class="block mb-2 poppins-medium">Password</label>
               <input
                 id="password"
-                class="border p-3 shadow-md dark:bg-indigo-700 dark:text-gray-300 dark:border-gray-700 border-gray-300 rounded-lg w-full focus:ring-2 focus:ring-blue-500 transition transform hover:scale-105 duration-300"
+                name="password"
+                class="form-input"
                 type="password"
                 placeholder="Password"
-                required=""
+                required
+                [(ngModel)]="password"
               />
             </div>
-            <!-- <a href="#" class="text-blue-400 text-sm transition hover:underline"
-              >Forget your password?</a
-            > -->
             <button
-              class="w-full p-3 mt-4 text-white bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg hover:scale-105 transition transform duration-300 shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              class="form-button mt-4"
               type="submit"
             >
               LOG IN
             </button>
           </form>
-          <div class="flex flex-col mt-4 text-sm text-center dark:text-gray-300">
-              Don't have an account? <div class="text-blue-400 transition hover:underline" (click)="gotoSignUp()"> Sign Up </div>
+
+          <div class="flex flex-col mt-4 text-sm text-center poppins-small">
+            Don't have an account?
+            <div class="link" (click)="gotoSignUp()">Sign Up</div>
           </div>
-          <div class="mt-4 text-center text-sm text-gray-500">
+          <div class="mt-4 text-center text-sm poppins-small">
             <p>
               By signing in, you agree to our
-              <a href="#" class="text-blue-400 transition hover:underline"
-                >Terms</a
-              >
+              <a href="#" class="link">Terms</a>
               and
-              <a href="#" class="text-blue-400 transition hover:underline"
-                >Privacy Policy</a
-              >.
+              <a href="#" class="link">Privacy Policy</a>.
             </p>
           </div>
           <button
-          class="w-full p-3 mt-4 text-white bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg hover:scale-105 transition transform duration-300 shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          type="submit" (click)="skip()"
-        >
-          skip
-        </button>
+            class="form-button mt-4"
+            type="button"
+            (click)="skip()"
+          >
+            skip
+          </button>
         </div>
       </section>
     </div>
   </div>
+</div> -->
 
+<!--<input [(ngModel)]="email" id="email" name="username" placeholder="example@mail.com" />
+
+<input [(ngModel)]="password" id="password" name="password" placeholder="123abc!@#" />
+
+<button (click)="checkUser()">Login</button>
+
+<h1>{{ email }}</h1>
+<h1>{{ password }}</h1>
+
+<button routerLink="/auth/signup">
+  SignUp
+</button>-->
+
+<!--<div class="login-container">
+  <h2>Welcome Back</h2>
+
+  <div class="input-group">
+    <input [(ngModel)]="email" id="email" name="username" required />
+    <label for="email">Enter email address</label>
+  </div>
+
+  <div class="input-group">
+    <input [(ngModel)]="password" id="password" name="password" type="password" required />
+    <label for="password">Enter password</label>
+  </div>
+
+  <button (click)="checkUser()">Login</button>
+
+  <div class="signup-section">
+    <span>Don't have an account?</span>
+    <button routerLink="/auth/signup">Sign Up</button>
+  </div>
+</div>-->
+<!--<div class="page-container">
+  <div class="login-wrapper">
+    <div class="login-container">
+      <h2>Welcome Back</h2>
+
+      <div class="input-group">
+        <input [(ngModel)]="email" id="email" name="username" required />
+        <label for="email">Enter email address</label>
+      </div>
+
+      <div class="input-group password-group">
+        <input [(ngModel)]="password" id="password" name="password" [type]="showPassword ? 'text' : 'password'" required />
+        <label for="password">Enter password</label>
+        <span class="password-toggle" (click)="togglePasswordVisibility()">
+          <svg class="eye-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path *ngIf="!showPassword" d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+            <circle *ngIf="!showPassword" cx="12" cy="12" r="3"></circle>
+            <path *ngIf="showPassword" d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+            <line *ngIf="showPassword" x1="1" y1="1" x2="23" y2="23"></line>
+          </svg>
+        </span>
+      </div>
+
+      <button (click)="checkUser()">Login</button>
+
+      <div class="signup-section">
+        <span>Don't have an account?</span>
+        <button routerLink="/auth/signup">Sign Up</button>
+      </div>
+    </div>
+  </div>
+</div>-->
+<div class="page-container">
+  <div class="login-wrapper">
+    <div class="login-container">
+      <h2>Welcome Back</h2>
+
+      <div class="input-group">
+        <input [(ngModel)]="email" id="email" name="username" placeholder="Enter email address" required />
+      </div>
+
+      <div class="input-group password-group">
+        <input [(ngModel)]="password" id="password" name="password"
+               [type]="showPassword ? 'text' : 'password'" placeholder="Enter password" required />
+        <span class="password-toggle" (click)="togglePasswordVisibility()">
+          <svg class="eye-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path *ngIf="!showPassword" d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+            <circle *ngIf="!showPassword" cx="12" cy="12" r="3"></circle>
+            <path *ngIf="showPassword" d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+            <line *ngIf="showPassword" x1="1" y1="1" x2="23" y2="23"></line>
+          </svg>
+        </span>
+      </div>
+
+      <button (click)="checkUser()">Login</button>
+
+      <div class="signup-section">
+        <span>Don't have an account?</span>
+        <button routerLink="/auth/signup">Sign Up</button>
+      </div>
+    </div>
+  </div>
 </div>
+
+
