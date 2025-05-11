@@ -7,10 +7,11 @@ import { CommonModule } from '@angular/common';
 import { ApiService } from '../../services/api.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import{ReactiveFormsModule } from '@angular/forms';
+import { FooterComponent } from "../../components/footer/footer.component";
 
 @Component({
   selector: 'app-profile',
-  imports: [SideBarComponent, HeaderComponent, BreadcrumbComponent, CommonModule,ReactiveFormsModule, FormsModule],
+  imports: [SideBarComponent, HeaderComponent, BreadcrumbComponent, CommonModule, ReactiveFormsModule, FormsModule, FooterComponent],
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss']
 })
@@ -80,6 +81,7 @@ export class ProfileComponent implements OnInit {
   fetchAddressData(): void {
     this.api.getProfileAddress().subscribe((res: any) => {
       if (res) {
+        console.log('Address Data:', res);
         this.addressForm.patchValue({
           country: res.country || '',
           state: res.state || '',

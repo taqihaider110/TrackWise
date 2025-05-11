@@ -268,4 +268,37 @@ export class ApiService {
     });
   }
 
+
+  /////////////////////////////////////////////////
+  ////////////////// api for savings
+
+  getLast12MonthsSavings() {
+    const token = localStorage.getItem('token');
+
+    const url = 'https://ai-finance-tracker-ko8v.onrender.com/api/v1/savings-progress/past-12-months';
+
+    return this.client.get(url, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+  }
+
+getMonthlySavings(month: number, year: number) {
+  const token = localStorage.getItem('token');
+
+  // Format the month to always be two digits
+  const formattedMonth = month.toString().padStart(2, '0'); // e.g., 1 -> "01", 2 -> "02"
+
+  // Combine year and formatted month into "YYYY-MM"
+  const formattedDate = `${year}-${formattedMonth}`;
+
+  const url = `https://ai-finance-tracker-ko8v.onrender.com/api/v1/savings-progress/monthly?month=${formattedDate}`;
+
+  return this.client.get(url, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+}
 }

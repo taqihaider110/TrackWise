@@ -12,6 +12,8 @@ import { LineChartComponent } from '../../components/line-chart/line-chart.compo
 import { ConfirmationDialogComponent } from '../../components/confirmation-dialog/confirmation-dialog.component';
 import { FormsModule } from '@angular/forms';
 import { PieChartComponent } from "../../components/pie-chart/pie-chart.component";
+import { FooterComponent } from "../../components/footer/footer.component";
+import { TotalCardComponent } from "../../components/total-card/total-card.component";
 
 @Component({
   selector: 'app-expenses',
@@ -22,7 +24,9 @@ import { PieChartComponent } from "../../components/pie-chart/pie-chart.componen
     CommonModule,
     LineChartComponent,
     FormsModule,
-    PieChartComponent
+    PieChartComponent,
+    FooterComponent,
+    TotalCardComponent
 ],
   templateUrl: './expenses.component.html',
   styleUrls: ['./expenses.component.scss']
@@ -37,7 +41,7 @@ export class ExpensesComponent {
   currentYear: number = new Date().getFullYear(); // Default to the current year
 
   expensePieChartData: any; // For expenses
-  totalMonthyExpense: number=0;
+  totalMonthlyExpense: number=0;
 
   showAll: boolean = false;
 
@@ -45,6 +49,7 @@ export class ExpensesComponent {
     'January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December'
   ];
+totalMonthlySavings: any;
 
   constructor(
     private api: ApiService,
@@ -219,7 +224,7 @@ export class ExpensesComponent {
 
     this.expenses.getMonthlyCategoryBreakdown(selectedMonth, this.currentYear).subscribe((chartData) => {
 
-      this.totalMonthyExpense = chartData.totalAmount;
+      this.totalMonthlyExpense = chartData.totalAmount;
       this.expensePieChartData = {
         labels: chartData.labels,
         datasets: [

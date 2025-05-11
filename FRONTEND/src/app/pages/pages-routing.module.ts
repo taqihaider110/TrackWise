@@ -3,7 +3,8 @@ import { RouterModule, Routes } from '@angular/router';
 import { authGuard } from '../guards/auth.guard'; // Import your AuthGuard
 
 const routes: Routes = [
-    { path: '', loadChildren: () => import('./splash/splash.module').then(m => m.SplashModule) },
+    // { path: '', loadChildren: () => import('./splash/splash.module').then(m => m.SplashModule) }, // change when splash is ready
+    {path: '',  loadChildren: () => import('./home/home.module').then(m => m.HomeModule)},
     {
       path: 'auth',
       loadChildren: () => import('./auth/auth.module').then(m => m.AuthModule),

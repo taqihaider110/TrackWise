@@ -12,6 +12,8 @@ import { PieChartComponent } from "../../components/pie-chart/pie-chart.componen
 import { IncomesService } from '../../services/incomes.service';
 import { AddIncomeModalComponent } from './add-income-modal/add-income-modal.component';
 import { ConfirmationDialogComponent } from '../../components/confirmation-dialog/confirmation-dialog.component';
+import { FooterComponent } from "../../components/footer/footer.component";
+import { TotalCardComponent } from "../../components/total-card/total-card.component";
 
 @Component({
   selector: 'app-income',
@@ -22,8 +24,10 @@ import { ConfirmationDialogComponent } from '../../components/confirmation-dialo
     CommonModule,
     LineChartComponent,
     FormsModule,
-    PieChartComponent
-  ],
+    PieChartComponent,
+    FooterComponent,
+    TotalCardComponent
+],
   templateUrl: './income.component.html',
   styleUrls: ['./income.component.scss']
 })

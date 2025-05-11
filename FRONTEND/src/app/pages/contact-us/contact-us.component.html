@@ -1,4 +1,4 @@
-
+<!--
 <div class="page-wrapper flex flex-col">
   <app-header>
     <app-home-navbar></app-home-navbar>
@@ -25,7 +25,6 @@
       <strong>Saturday – Sunday:</strong> Closed (email support available)
     </p>
 
-    <!-- FAQ Section -->
     <h4 class="poppins-medium text-accent">❓ Frequently Asked Questions (FAQs)</h4>
     <div class="faq-box">
       <div class="faq-item">
@@ -85,4 +84,55 @@
 
 <app-footer></app-footer>
 
+ -->
+<div class="page-wrapper flex flex-col">
+  <app-header>
+    <app-home-navbar></app-home-navbar>
+  </app-header>
+  <app-breadcrumb [text]="'Contact Us'"></app-breadcrumb>
 
+ <div class="contact-container">
+  <div class="info-grid">
+    <div class="info-card">
+      <img src="assets/icons/mail.svg" alt="Phone Icon" class="h-10" />
+      <h4 class="poppins-medium">Mail Address</h4>
+      <p class="poppins-small">taqihaider591&#64;gmail.com</p>
+    </div>
+    <div class="info-card">
+      <img src="assets/icons/mail.svg" alt="Phone Icon" class="h-10" />
+      <h4 class="poppins-medium">Mail Address</h4>
+      <p class="poppins-small">wajihwork0902&#64;gmail.com</p>
+    </div>
+    <div class="info-card">
+      <img src="assets/icons/mail.svg" alt="Phone Icon" class="h-10" />
+      <h4 class="poppins-medium">Mail Address</h4>
+      <p class="poppins-small">tanveerfilza09&#64;gmail.com</p>
+    </div>
+    <div class="info-card">
+            <img src="assets/icons/calendar.svg" alt="Phone Icon" class="h-10" />
+      <h4>Work Days</h4>
+      <p>Mon to Fri, 09:00 - 17:00</p>
+    </div>
+  </div>
+
+  <div class="form-section pt-10">
+    <div class="left">
+      <h5 class="poppins-medium text-accent">Get In Touch</h5>
+      <h2 class="poppins-medium">Let’s Discuss How We Can Support</h2>
+
+    </div>
+
+    <div class="right">
+      <form class="poppins-small">
+        <input type="text" placeholder="Your Name" />
+        <input type="email" placeholder="Your Email" />
+        <input type="text" placeholder="Subject" />
+        <textarea placeholder="Message"></textarea>
+        <button class="button poppins-medium" (click)="sendMessage($event)">Send Message</button>
+      </form>
+    </div>
+  </div>
+ </div>
+
+  <app-footer></app-footer>
+</div>

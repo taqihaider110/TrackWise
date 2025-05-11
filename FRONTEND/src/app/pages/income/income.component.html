@@ -27,22 +27,14 @@
         </div>
 
         <!-- Total Income Card -->
-        <div class="total-income-card">
-          <div class="card-box">
-            <div class="card-header">
-              <div class="card-title poppins-medium">Total Income</div>
-              <p class="card-subtitle poppins-small">
-                {{ monthNames[currentMonthIndex] }} {{ currentYear }}
-              </p>
-            </div>
-            <div class="card-body">
-              <div class="total-amount">
-                <span class="currency poppins-small">Rs</span>
-                <span class="amount poppins-heading">{{ totalMonthlyIncome | number }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
+        <app-total-card
+          [title]="'Total Income'"
+          [currentMonthName]="monthNames[currentMonthIndex]"
+          [currentYear]="currentYear"
+          [total]="totalMonthlyIncome"
+          (monthChanged)="handleMonthChange($event)"
+        >
+        </app-total-card>
       </div>
 
       <!-- Recent Income Section -->
@@ -115,5 +107,6 @@
       </div>
     </div>
   </div>
+  <app-footer></app-footer>
 </div>
 

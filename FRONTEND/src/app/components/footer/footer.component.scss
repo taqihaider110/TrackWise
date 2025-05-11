@@ -4,10 +4,12 @@
 }
 .footer-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 10rem;
   max-width: 1200px;
   margin: auto;
+  max-height: 300px !important;
+
 }
 .logo {
   height: 40px;
@@ -45,7 +47,7 @@
 }
 .footer-bottom {
   border-top: 1px solid #222;
-  margin-top: 2.5rem;
+  // margin-top: 2.5rem;
   padding-top: 1.5rem;
   display: flex;
   flex-direction: column;

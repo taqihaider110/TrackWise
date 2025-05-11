@@ -1,19 +1,17 @@
 <div class="section-container flex flex-col items-center m-20 mr-30 ml-30">
   <div class="text-center pb-10">
-    <div class="poppins-heading pt-10">Smart Finance Tracking Made Simple</div>
-    <div class="poppins-heading text-colour">All-in-One Personal Budget Manager</div>
+    <div class="poppins-heading pt-10">Smart Finance Tracking Made Simple With All-in-One</div>
+    <div class="poppins-heading text-colour">Personal Budget Manager</div>
   </div>
 
   <div class="flex flex-col items-center pb-15">
     <div class="text-center poppins-medium pb-6">
-      Our personal finance tracker helps individuals manage their income and expenses, 
-      monitor monthly savings progress, and stay organized with a clear financial profile. 
-      Whether you're budgeting for essentials or tracking goals, everything is in one place to 
+      Our personal finance tracker helps individuals manage their income and expenses,
+      monitor monthly savings progress, and stay organized with a clear financial profile.
+      Whether you're budgeting for essentials or tracking goals, everything is in one place to
       help you stay in control of your money.
     </div>
-    <button class="button-1">
-      <!-- go to signup -->
-      Get Started
+    <button class="button-1" (click)="changeStatus()"> {{ isLoggedIn ? 'Dashboard' : 'Get Started' }}
     </button>
   </div>
 </div>

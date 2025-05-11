@@ -4,6 +4,7 @@ import { BreadcrumbComponent } from "../../components/breadcrumb/breadcrumb.comp
 import { HomeNavbarComponent } from '../../components/home-navbar/home-navbar.component';
 import { FooterComponent } from "../../components/footer/footer.component";
 
+
 @Component({
   selector: 'app-contact-us',
   imports: [HeaderComponent, HomeNavbarComponent, BreadcrumbComponent, FooterComponent],
@@ -11,5 +12,7 @@ import { FooterComponent } from "../../components/footer/footer.component";
   styleUrl: './contact-us.component.scss'
 })
 export class ContactUsComponent {
-
+  sendMessage(event: Event){
+    event.preventDefault();
+  }
 }

@@ -5,13 +5,13 @@
     <div class="feature-heading text-accent pb-6">What Makes Us Different?</div>
 
     <div class="sub-heading">
-      Our personal finance tracker simplifies money management by helping individuals 
+      Our personal finance tracker simplifies money management by helping individuals
       track income, control spending, set budgets, and monitor monthly savings—all in one place.
     </div>
 
     <div class="features-container">
-      <div class="feature-box" *ngFor="let feature of features">
-        <img [src]="feature.icon" alt="{{ feature.title }}" class="feature-icon" />
+      <div class="feature-box " *ngFor="let feature of features">
+        <img [src]="feature.icon" alt="{{ feature.title }}" class="feature-icon pt-3" />
         <div class="feature-title pt-2">{{ feature.title }}</div>
         <ul>
           <li *ngFor="let point of feature.points">{{ point }}</li>

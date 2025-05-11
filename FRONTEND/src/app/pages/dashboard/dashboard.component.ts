@@ -11,11 +11,13 @@ import { ExpensesService } from '../../services/expenses.service';
 import { IncomesService } from '../../services/incomes.service';
 import { LineChartComponent } from "../../components/line-chart/line-chart.component";
 import { PieChartComponent } from "../../components/pie-chart/pie-chart.component";
+import { FooterComponent } from "../../components/footer/footer.component";
+import { SavingsService } from '../../services/savings.service';
+import { TotalCardComponent } from "../../components/total-card/total-card.component";
 
 @Component({
   selector: 'app-dashboard',
-  standalone: true,
-  imports: [HeaderComponent, BreadcrumbComponent, CommonModule, SideBarComponent, ChartModule, RouterModule, LineChartComponent, PieChartComponent],
+  imports: [HeaderComponent, BreadcrumbComponent, CommonModule, SideBarComponent, ChartModule, RouterModule, LineChartComponent, PieChartComponent, FooterComponent, TotalCardComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
@@ -30,173 +32,28 @@ export class DashboardComponent {
 
   expenseChartData: any;
   incomeChartData: any;
+  savingsChartData: any;
 
   expensePieChartData: any; // For expenses
   incomePieChartData: any;
 
-  //////////////////////////////////////////////////////////
-  //////////////////////////////////////////////////////////
-  chartData: any;
-  chartOptions: any;
-
-  pieChartData: any;
-  pieChartOptions: any;
-
   months: string[] = ['January', 'February', 'March', 'April'];
-  // currentMonthIndex: number = 2; // Default to March
 
-  constructor(private api: ApiService, private expenses:ExpensesService, private income: IncomesService) {}
+totalMonthlySavings: number=0;
+
+  constructor(private api: ApiService, private expenses:ExpensesService, private income: IncomesService, private savings: SavingsService) {}
 
    ngOnInit() {
-    // this.initializeChartOptions();
-    // this.initializeBarChart();
-
-    // this.updatePieChartData();
-
-    // this.api.getDashboardData().subscribe((res: any) => {
-    //   console.log(res)
-    // });
-
-    // this.api.getMonthlyExpensesSummary(1, 2025).subscribe(response => {
-    //   console.log('1month data',response);
-    // });
-
-    // this.api.getExpensesSummary(2025).subscribe(response2 => {
-    //   console.log(response2);
-    // });
-
-    // this.expenses.getAllMonthlyExpenses().subscribe((expenses) => {
-    //   console.log(expenses);
-    // });
-
-
-
-    ///////////////////////////////////////////////////////////////////////////////////
     this.intializeExpenseChart();
     this.initializeIncomeChart();
+    this.intializeSavingsChart();
 
     this.intializeExpensePieChartData();
     this.intializeIncomePieChartData();
+
+    this.getTotalMonthlySavings();
   }
 
-  // get currentMonth(): string {
-  //   return this.months[this.currentMonthIndex];
-  // }
-
-  // goToPreviousMonth(): void {
-  //   if (this.currentMonthIndex > 0) {
-  //     this.currentMonthIndex--;
-  //     this.updatePieChartData();
-  //   }
-  // }
-
-  // goToNextMonth(): void {
-  //   if (this.currentMonthIndex < this.months.length - 1) {
-  //     this.currentMonthIndex++;
-  //     this.updatePieChartData();
-  //   }
-  // }
-
-  // updatePieChartData(): void {
-  //   const mockData: { [key: string]: number[] } = {
-  //     January: [100, 200, 300],
-  //     February: [400, 100, 250],
-  //     March: [300, 500, 200],
-  //     April: [200, 400, 350]
-  //   };
-
-  //   this.pieChartData = {
-  //     labels: ['Development', 'Marketing', 'Sales'],
-  //     datasets: [
-  //       {
-  //         data: mockData[this.currentMonth] || [0, 0, 0],
-  //         backgroundColor: ['#42A5F5', '#66BB6A', '#FFA726'],
-  //         hoverBackgroundColor: ['#64B5F6', '#81C784', '#FFB74D']
-  //       }
-  //     ]
-  //   };
-  // }
-
-  // initializeChartOptions(): void {
-  //   this.chartOptions = {
-  //     maintainAspectRatio: false,
-  //     aspectRatio: 1.2,
-  //     responsive: true,
-  //     plugins: {
-  //       legend: {
-  //         display: false,
-  //         labels: {
-  //           color: '#fff'
-  //         }
-  //       }
-  //     },
-  //     scales: {
-  //       x: {
-  //         ticks: { color: '#fff' },
-  //         grid: { color: '#fff' },
-  //         title: {
-  //           display: true,
-  //           text: 'Months',
-  //           color: '#fff',
-  //           font: {
-  //             family: 'Poppins',
-  //             size: 20,
-  //             weight: 'bold'
-  //           }
-  //         }
-  //       },
-  //       y: {
-  //         ticks: { color: '#fff' },
-  //         grid: { color: '#fff' },
-  //         title: {
-  //           display: true,
-  //           color: '#fff',
-  //           font: {
-  //             family: 'Poppins',
-  //             size: 20,
-  //             weight: 'bold'
-  //           }
-  //         }
-  //       }
-  //     }
-  //   };
-
-  //   this.pieChartOptions = {
-  //     maintainAspectRatio: false,
-  //     aspectRatio: 1.2,
-  //     responsive: true,
-  //     plugins: {
-  //       legend: {
-  //         position: 'bottom',
-  //         labels: {
-  //           color: '#fff'
-  //         }
-  //       }
-  //     }
-  //   };
-  // }
-
-  // initializeBarChart(): void {
-  //   this.chartData = {
-  //     labels: ['January', 'February', 'March', 'April'],
-  //     datasets: [
-  //       {
-  //         label: 'Income',
-  //         backgroundColor: '#02EA77',
-  //         borderColor: '#02EA77',
-  //         data: [65, 59, 80, 81, 100]
-  //       }
-  //     ]
-  //   };
-  // }
-
-
-    /////////////////////////////////////////////////////////////////////////
-  ////////////////////////////////////////////////////////////////////////
-    /////////////////////////////////////////////////////////////////////////
-  ////////////////////////////////////////////////////////////////////////
-  /////////////////////////////////////////////////////////////////////////
-  ////////////////////////////////////////////////////////////////////////
    intializeExpenseChart(){
     this.expenses.getLast12MonthsExpenses().subscribe((expenses) => {
       const labels = expenses.map(expense => expense.month);
@@ -227,6 +84,26 @@ export class DashboardComponent {
         datasets: [
           {
             label: 'Income',
+            backgroundColor: '#4CAF50',
+            borderColor: '#4CAF50',
+            data: data
+          }
+        ]
+      };
+    });
+  }
+
+  intializeSavingsChart(){
+    this.savings.getLast12MonthsSavings().subscribe((savings) => {
+      console.log(savings);
+      const labels = savings.map(saving => saving.month);
+      const data = savings.map(saving => saving.total);
+
+      this.savingsChartData = {
+        labels: labels,
+        datasets: [
+          {
+            label: 'Savings',
             backgroundColor: '#42A5F5',
             borderColor: '#42A5F5',
             data: data
@@ -234,7 +111,7 @@ export class DashboardComponent {
         ]
       };
     });
-  }
+   }
 
   intializeExpensePieChartData() {
     const selectedMonth = this.currentMonthIndex + 1; // Convert 0-based index to 1-based month
@@ -264,6 +141,13 @@ export class DashboardComponent {
     });
   }
 
+  getTotalMonthlySavings() {
+    const selectedMonth = this.currentMonthIndex + 1; // Convert 0-based index to 1-based month
+    this.savings.getMonthlyTotal(selectedMonth, this.currentYear).subscribe((chartData) => {
+      this.totalMonthlySavings = chartData.totalAmount;
+    });
+  }
+
   handleMonthChange(change: number){
     this.currentMonthIndex += change;
 
@@ -277,6 +161,8 @@ export class DashboardComponent {
 
     this.intializeExpensePieChartData();
     this.intializeIncomePieChartData();
+
+    this.getTotalMonthlySavings();
   }
 
 }

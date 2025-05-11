@@ -1,12 +1,127 @@
-.about-list {
-  list-style-type: disc;
-  padding-left: 1.5rem;
-  margin: 0;
-}
+.page-wrapper {
 
-.about-list li {
-  margin-bottom: 0.75rem;
-  line-height: 1.6;
-  color: #fff;
-}
+  .about-section {
+    margin-bottom: 3rem;
 
+    .section-title {
+      font-size: 2rem;
+      margin-bottom: 2rem;
+      text-align: center;
+      color: #02ea77;
+    }
+
+    .info-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      justify-content: center;
+
+      .info-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* Horizontally center the content */
+        justify-content: center; /* Vertically center the content */
+        text-align: center; /* Center-align the text */
+        background: #2e2e2e;
+        border: 1px solid #3a3a3a;
+        border-radius: 12px;
+        padding: 1.5rem;
+        transition: all 0.3s ease;
+        flex: 1 1 300px;
+        max-width: 350px;
+
+        .icon {
+          width: 50px;
+          height: 50px;
+          margin-bottom: 1rem; /* Add spacing between the icon and the text */
+        }
+
+        h4 {
+          font-size: 1.5rem;
+          color: #02ea77;
+          margin-bottom: 0.5rem;
+        }
+
+        p {
+          font-size: 0.9rem;
+          color: #ccc;
+          line-height: 1.6;
+        }
+
+        &:hover {
+          transform: scale(1.03);
+          box-shadow: 0 10px 20px rgba(2, 234, 119, 0.3);
+          border-color: rgba(2, 234, 119, 0.5);
+        }
+      }
+    }
+
+    .about-list {
+      list-style: none;
+      padding: 0;
+      margin: 0 auto;
+      max-width: 800px;
+
+      li {
+        margin-bottom: 1rem;
+        line-height: 1.6;
+        color: #ccc;
+
+        strong {
+          color: #02ea77;
+        }
+      }
+    }
+
+    .about-image-cards {
+      display: flex;
+      gap: 1rem;
+
+      .image-card {
+        position: relative;
+        border-radius: 25px;
+        overflow: hidden;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        text-align: left;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        background-size: cover;
+        background-position: center;
+        padding: 1rem;
+
+        .card-text {
+          z-index: 2;
+          position: relative;
+          padding: 0.5rem 1rem;
+          width: 100%;
+          text-align: left;
+        }
+
+        &::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background: rgba(0, 0, 0, 0.3);
+          z-index: 1;
+        }
+
+        &:hover {
+          transform: scale(1.03);
+          border: 1px solid #02ea77;
+          box-shadow: 0px 5px 25px rgba(2, 234, 119, 0.7);
+        }
+      }
+
+      .large-card {
+        width: clamp(250px, 35vw, 300px);
+        height: clamp(320px, 45vw, 500px);
+      }
+
+      .small-card {
+        width: clamp(250px, 28vw, 300px);
+        height: clamp(140px, 20vw, 242px);
+      }
+    }
+  }
+}
