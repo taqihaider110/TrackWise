@@ -7,43 +7,44 @@ const { startOfMonth, endOfMonth, format, subMonths } = require("date-fns");
 // Controller to fetch all savings for the user with pagination
 exports.getAllSavingsForUser = async (req, res) => {
   try {
-    const { page = 1, pageSize = 10 } = req.query;
+    const { page = 1, pageSize = 10, startMonth, endMonth } = req.query;
     const userId = req.user?.id;
     if (!userId) return res.status(400).json({ error: "User ID is missing" });
 
-    // 1. Fetch all distinct months from income and expense
-    const [incomeMonths, expenseMonths] = await Promise.all([
-      Income.findAll({
-        attributes: [[literal(`TO_CHAR("date", 'YYYY-MM')`), "month"]],
-        where: { userId },
-        raw: true,
-      }),
-      Expense.findAll({
-        attributes: [[literal(`TO_CHAR("date", 'YYYY-MM')`), "month"]],
-        where: { userId },
-        raw: true,
-      }),
-    ]);
+    const parseMonth = (label) => new Date(`${label}-01`);
+    const formatMonth = (date) => date.toISOString().slice(0, 7);
 
-    const allMonthsSet = new Set([
-      ...incomeMonths.map((m) => m.month),
-      ...expenseMonths.map((m) => m.month),
-    ]);
-    const allMonths = Array.from(allMonthsSet).sort();
+    // 1. Determine date range
+    let startDate = startMonth ? parseMonth(startMonth) : await Income.min("date", { where: { userId } }) || await Expense.min("date", { where: { userId } });
+    let endDate = endMonth ? parseMonth(endMonth) : await Income.max("date", { where: { userId } }) || await Expense.max("date", { where: { userId } });
 
-    // 2. Fetch existing savings progress for those months
+    if (!startDate || !endDate) {
+      return res.status(400).json({ error: "No income or expense data found for user" });
+    }
+
+    // 2. Generate month list
+    const monthList = [];
+    let current = new Date(startDate);
+    current.setDate(1);
+
+    while (current <= endDate) {
+      monthList.push(formatMonth(current));
+      current.setMonth(current.getMonth() + 1);
+    }
+
+    // 3. Fetch existing savings progress
     const existingProgress = await SavingsProgress.findAll({
       where: {
         userId,
-        month: { [Op.in]: allMonths },
+        month: { [Op.in]: monthList },
       },
       raw: true,
     });
 
     const progressMap = new Map(existingProgress.map((p) => [p.month, p]));
 
-    // 3. Calculate and conditionally upsert only changed data
-    for (const label of allMonths) {
+    // 4. Process and upsert savings per month
+    for (const label of monthList) {
       const monthStart = new Date(`${label}-01`);
       const monthEnd = endOfMonth(monthStart);
 
@@ -86,7 +87,7 @@ exports.getAllSavingsForUser = async (req, res) => {
       }
     }
 
-    // 4. Fetch paginated results
+    // 5. Fetch paginated results
     const savingsRecords = await SavingsProgress.findAndCountAll({
       where: { userId },
       order: [["month", "DESC"]],
@@ -94,11 +95,12 @@ exports.getAllSavingsForUser = async (req, res) => {
       limit: parseInt(pageSize),
     });
 
-    // 5. Calculate overall totals
+    // 6. Totals
     const [totalSavings, totalMonths] = await Promise.all([
       SavingsProgress.sum("savings", { where: { userId } }),
       SavingsProgress.count({ where: { userId } }),
     ]);
+
     res.status(200).json({
       totalRecords: savingsRecords.count,
       savings: savingsRecords.rows,
@@ -107,12 +109,12 @@ exports.getAllSavingsForUser = async (req, res) => {
       totalSavings: totalSavings || 0,
       averageSavings: totalMonths > 0 ? parseFloat((totalSavings / totalMonths).toFixed(2)) : 0,
     });
-  } 
-  catch (error) {
+  } catch (error) {
     console.error("Error in getAllSavingsForUser:", error);
     res.status(500).json({ error: error.message });
   }
 };
+
 
 // Controller to get monthly saving progress for a given month
 exports.getMonthlySavingProgress = async (req, res) => {

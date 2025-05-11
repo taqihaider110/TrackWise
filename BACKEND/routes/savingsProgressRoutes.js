@@ -19,7 +19,7 @@ const router = express.Router();
  * @swagger
  * /api/v1/savings-progress:
  *   get:
- *     summary: Get paginated savings records for a user by month
+ *     summary: Get paginated savings records for a user by month or range
  *     tags: [Savings Progress]
  *     security:
  *       - bearerAuth: []
@@ -28,28 +28,35 @@ const router = express.Router();
  *         name: page
  *         schema:
  *           type: integer
- *           default: 5
+ *           default: 1
  *         description: Page number for pagination
  *       - in: query
  *         name: pageSize
  *         schema:
  *           type: integer
- *           default: 25
+ *           default: 10
  *         description: Number of records per page
  *       - in: query
- *         name: month
+ *         name: startMonth
  *         required: false
  *         schema:
  *           type: string
  *           format: yyyy-MM
- *         description: Month in yyyy-MM format (e.g., 2025-05)
+ *         description: Start month in yyyy-MM format (e.g., 2023-01)
+ *       - in: query
+ *         name: endMonth
+ *         required: false
+ *         schema:
+ *           type: string
+ *           format: yyyy-MM
+ *         description: End month in yyyy-MM format (e.g., 2025-05)
  *     responses:
  *       200:
  *         description: Paginated savings records
  *       400:
  *         description: Invalid input or request
  *       500:
- *        description: Internal server error
+ *         description: Internal server error
  */
 router.get("/", authMiddleware, getAllSavingsForUser);
 
