@@ -5,33 +5,77 @@ const moment = require("moment");
 
 // Add multiple expenses
 const addExpenses = async (req, res) => {
-    try {
-        const expenses = req.body.expense;  // Expecting the array to be under the 'expense' key
+  try {
+    const expenses = req.body.expense; // Expecting an array under 'expense' key
 
-        if (!Array.isArray(expenses)) {
-            return res.status(400).json({ error: "Invalid data format. Expected an array of expenses." });
-        }
-
-        if (!req.user || !req.user.id) {
-            return res.status(400).json({ error: "User ID is missing" });
-        }
-
-        // Map over the expenses array and create each expense in the database
-        const createdExpenses = await Expense.bulkCreate(
-            expenses.map(expense => ({
-                userId: req.user.id,
-                amount: expense.amount,
-                category: expense.category,
-                description: expense.description,
-                date: expense.date,
-            }))
-        );
-
-        res.status(201).json(createdExpenses);
-    } catch (error) {
-        console.error("Error adding expenses:", error);
-        res.status(500).json({ error: "Server error" });
+    // Validate that it's an array
+    if (!Array.isArray(expenses)) {
+      return res.status(400).json({ error: "Invalid data format. Expected an array of expenses." });
     }
+
+    // Empty array check
+    if (expenses.length === 0) {
+      return res.status(400).json({ error: "Expense list cannot be empty." });
+    }
+
+    // Check for user authentication
+    if (!req.user || !req.user.id) {
+      return res.status(400).json({ error: "User ID is missing" });
+    }
+
+    const errors = [];
+    const validExpenses = [];
+
+    for (let i = 0; i < expenses.length; i++) {
+      const { amount, category, description, date } = expenses[i];
+
+      if (!category || !category.trim()) {
+        errors.push(`Entry ${i + 1}: 'category' is required.`);
+        continue;
+      }
+
+      if (!amount || amount <= 0) {
+        errors.push(`Entry ${i + 1}: 'amount' must be greater than 0.`);
+        continue;
+      }
+
+      if (!date || isNaN(new Date(date))) {
+        errors.push(`Entry ${i + 1}: 'date' must be a valid date.`);
+        continue;
+      }
+
+      const parsedDate = new Date(date);
+      const today = new Date();
+      if (parsedDate > today) {
+        errors.push(`Entry ${i + 1}: 'date' cannot be in the future.`);
+        continue;
+      }
+
+      validExpenses.push({
+        userId: req.user.id,
+        amount,
+        category: category.trim(),
+        description: description?.trim() || "",
+        date: parsedDate,
+      });
+    }
+
+    // If all are invalid
+    if (validExpenses.length === 0) {
+      return res.status(400).json({ error: "All entries are invalid", details: errors });
+    }
+
+    const createdExpenses = await Expense.bulkCreate(validExpenses);
+
+    res.status(201).json({
+      message: `${createdExpenses.length} expense(s) added successfully.`,
+      errors: errors.length ? errors : undefined,
+      data: createdExpenses,
+    });
+  } catch (error) {
+    console.error("Error adding expenses:", error);
+    res.status(500).json({ error: "Server error" });
+  }
 };
 
 // Get paginated expenses with filtering by month/year
@@ -158,8 +202,6 @@ const getPast12MonthsExpenses = async (req, res) => {
     }
 };
 
-
-
 // Update an expense
 const updateExpense = async (req, res) => {
     try {
@@ -168,6 +210,27 @@ const updateExpense = async (req, res) => {
 
         if (!req.user || !req.user.id) {
             return res.status(400).json({ error: "User ID is missing" });
+        }
+
+        // Basic field validations
+        if (amount === undefined || amount === null || isNaN(amount) || Number(amount) <= 0) {
+            return res.status(400).json({ error: "Amount must be a positive number greater than 0" });
+        }
+
+        if (!category || typeof category !== "string" || category.trim() === "") {
+            return res.status(400).json({ error: "Category is required and must be a non-empty string" });
+        }
+
+        if (!date || isNaN(Date.parse(date))) {
+            return res.status(400).json({ error: "Date is required and must be a valid date" });
+        }
+
+        const inputDate = new Date(date);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        if (inputDate > today) {
+            return res.status(400).json({ error: "Date cannot be in the future" });
         }
 
         const expense = await Expense.findByPk(id);
@@ -181,7 +244,7 @@ const updateExpense = async (req, res) => {
 
         expense.amount = amount;
         expense.category = category;
-        expense.description = description;
+        expense.description = description || "";
         expense.date = date;
 
         await expense.save();
@@ -191,6 +254,7 @@ const updateExpense = async (req, res) => {
         res.status(500).json({ error: "Server error" });
     }
 };
+
 
 // Delete an expense
 const deleteExpense = async (req, res) => {

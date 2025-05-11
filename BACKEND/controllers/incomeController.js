@@ -6,34 +6,97 @@ const moment = require("moment");
 // Add Income (Handle multiple incomes)
 exports.addIncome = async (req, res) => {
   try {
-    const { incomes } = req.body; // Expecting an array of income objects
+    const { incomes } = req.body;
 
-    // Ensure the userId is available from the authenticated user
     if (!req.user || !req.user.id) {
       return res.status(400).json({ error: "User ID is missing" });
     }
 
-    // If incomes is an array, add all the incomes
-    if (Array.isArray(incomes)) {
-      const newIncomes = await Income.bulkCreate(
-        incomes.map((income) => ({
-          ...income,
-          userId: req.user.id, // Ensure the userId is correctly set for each income
-        }))
-      );
+    const userId = req.user.id;
 
-      return res.status(201).json(newIncomes);
+    // Bulk Add
+    if (Array.isArray(incomes)) {
+      if (incomes.length === 0) {
+        return res.status(400).json({ error: "Income list cannot be empty." });
+      }
+
+      const errors = [];
+      const validIncomes = [];
+
+      for (let i = 0; i < incomes.length; i++) {
+        const income = incomes[i];
+        const { source, amount, date, category } = income;
+
+        if (!source || !source.trim() || !category || !category.trim()) {
+          errors.push(`Entry ${i + 1}: 'source' and 'category' are required.`);
+          continue;
+        }
+
+        if (!amount || amount <= 0) {
+          errors.push(`Entry ${i + 1}: 'amount' must be greater than 0.`);
+          continue;
+        }
+
+        if (!date || isNaN(new Date(date))) {
+          errors.push(`Entry ${i + 1}: 'date' must be a valid date.`);
+          continue;
+        }
+
+        const parsedDate = new Date(date);
+        const today = new Date();
+        if (parsedDate > today) {
+          errors.push(`Entry ${i + 1}: 'date' cannot be in the future.`);
+          continue;
+        }
+
+        validIncomes.push({
+          source: source.trim(),
+          amount,
+          date: parsedDate,
+          category: category.trim(),
+          userId,
+        });
+      }
+
+      if (validIncomes.length === 0) {
+        return res.status(400).json({ error: "All entries are invalid", details: errors });
+      }
+
+      const newIncomes = await Income.bulkCreate(validIncomes);
+      return res.status(201).json({
+        message: `${newIncomes.length} income(s) added successfully.`,
+        errors: errors.length ? errors : undefined,
+        data: newIncomes,
+      });
     }
 
-    // If the input is a single income, add it normally
+    // Single Add
     const { source, amount, date, category } = req.body;
 
+    if (!source || !source.trim() || !category || !category.trim()) {
+      return res.status(400).json({ error: "'source' and 'category' are required." });
+    }
+
+    if (!amount || amount <= 0) {
+      return res.status(400).json({ error: "'amount' must be greater than 0." });
+    }
+
+    if (!date || isNaN(new Date(date))) {
+      return res.status(400).json({ error: "'date' must be a valid date." });
+    }
+
+    const parsedDate = new Date(date);
+    const today = new Date();
+    if (parsedDate > today) {
+      return res.status(400).json({ error: "'date' cannot be in the future." });
+    }
+
     const newIncome = await Income.create({
-      source,
+      source: source.trim(),
       amount,
-      date,
-      category,
-      userId: req.user.id, // Ensure the userId is correctly set
+      date: parsedDate,
+      category: category.trim(),
+      userId,
     });
 
     res.status(201).json(newIncome);
@@ -42,6 +105,7 @@ exports.addIncome = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
+
 
 // Get all Incomes (with filtering by month + pagination)
 exports.getIncomes = async (req, res) => {
@@ -115,6 +179,30 @@ exports.updateIncome = async (req, res) => {
       return res.status(400).json({ error: "User ID is missing" });
     }
 
+    // Validation
+    if (!source || !source.trim()) {
+      return res.status(400).json({ error: "'source' is required and cannot be empty." });
+    }
+
+    if (!category || !category.trim()) {
+      return res.status(400).json({ error: "'category' is required and cannot be empty." });
+    }
+
+    if (!amount || amount <= 0) {
+      return res.status(400).json({ error: "'amount' must be greater than 0." });
+    }
+
+    if (!date || isNaN(new Date(date))) {
+      return res.status(400).json({ error: "'date' must be a valid date." });
+    }
+
+    const parsedDate = new Date(date);
+    const today = new Date();
+    if (parsedDate > today) {
+      return res.status(400).json({ error: "'date' cannot be in the future." });
+    }
+
+    // Find and authorize income
     const income = await Income.findByPk(id);
     if (!income || income.userId !== req.user.id) {
       return res
@@ -123,10 +211,10 @@ exports.updateIncome = async (req, res) => {
     }
 
     // Update the income
-    income.source = source;
+    income.source = source.trim();
     income.amount = amount;
-    income.date = date;
-    income.category = category;
+    income.date = parsedDate;
+    income.category = category.trim();
 
     await income.save();
     res.status(200).json(income);
@@ -135,6 +223,7 @@ exports.updateIncome = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
+
 
 // Delete Income
 exports.deleteIncome = async (req, res) => {
