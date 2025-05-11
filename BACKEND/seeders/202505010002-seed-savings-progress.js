@@ -14,7 +14,7 @@ module.exports = {
       },
       {
         userId: 1, // Assumes userId 1 already exists in the Users table
-        month: '2025-04',  // Month field added
+        month: '2025-03',  // Month field added
         totalIncome: 50000, // Example total income
         totalExpense: 20000, // Example total expense
         savings: 20000, // Example savings
@@ -23,7 +23,7 @@ module.exports = {
       },
       {
         userId: 1, // Assumes userId 1 already exists in the Users table
-        month: '2025-03',  // Month field added
+        month: '2025-02',  // Month field added
         totalIncome: 70000, // Example total income
         totalExpense: 20000, // Example total expense
         savings: 50000, // Example savings
