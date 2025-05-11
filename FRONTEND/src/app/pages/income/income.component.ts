@@ -44,6 +44,7 @@ export class IncomeComponent {
   totalMonthlyIncome: number = 0;
 
   showAll: boolean = false;
+  maxMonthYear: string = '';
 
   monthNames = [
     'January', 'February', 'March', 'April', 'May', 'June',
@@ -62,6 +63,9 @@ export class IncomeComponent {
     const year = today.getFullYear();
     const month = today.getMonth() + 1;
     this.selectedMonthYear = `${year}-${month.toString().padStart(2, '0')}`;
+
+    this.maxMonthYear = today.toISOString().slice(0, 7);
+
     this.showIncome();
     this.initializeIncomeChart();
     this.initializeIncomePieChartData();
@@ -69,6 +73,7 @@ export class IncomeComponent {
 
   openAddIncomeModal(): void {
     const dialogRef = this.dialog.open(AddIncomeModalComponent, {
+      autoFocus: false,
       width: '400px',
       data: { mode: 'income' }
     });

@@ -28,6 +28,7 @@ export class PieChartComponent implements OnChanges {
 
     this.pieChartOptions = {
       maintainAspectRatio: false,
+      aspectRatio: 1.1,
       responsive: true,
       plugins: {
         legend: {

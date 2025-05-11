@@ -1,24 +1,42 @@
 <div class="custom-modal-content">
   <div class="custom-modal-title poppins-medium">Add Income</div>
-  <form>
+  <form [formGroup]="incomeForm">
+    <!-- Category Field -->
     <div class="custom-form-field poppins-small">
       <label for="category">Category</label>
-      <input id="category" type="text" [(ngModel)]="category" name="category" />
+      <input id="category" type="text" formControlName="category" />
+      <div *ngIf="incomeForm.get('category')?.errors && incomeForm.get('category')?.touched" class="error">
+        Category is required.
+      </div>
     </div>
 
+    <!-- Amount Field -->
     <div class="custom-form-field poppins-small">
       <label for="amount">Amount In Rs</label>
-      <input id="amount" type="number" [(ngModel)]="amount" name="amount" />
+      <input id="amount" type="number" formControlName="amount" />
+      <div *ngIf="incomeForm.get('amount')?.errors && incomeForm.get('amount')?.touched" class="error">
+        <span *ngIf="incomeForm.get('amount')?.errors?.['required']">Amount is required.</span>
+        <span *ngIf="incomeForm.get('amount')?.errors?.['min']">Amount must be greater 0.</span>
+      </div>
     </div>
 
+    <!-- Date Field -->
     <div class="custom-form-field poppins-small">
       <label for="date">Date</label>
-      <input id="date" type="date" [(ngModel)]="date" name="date" />
+      <input id="date" type="date" formControlName="date" [max]="maxDate" />
+      <div *ngIf="incomeForm.get('date')?.errors && incomeForm.get('date')?.touched" class="error">
+        <span *ngIf="incomeForm.get('date')?.errors?.['required']">Date is required.</span>
+        <span *ngIf="incomeForm.get('date')?.errors?.['max']">Date cannot be in the future.</span>
+      </div>
     </div>
 
+    <!-- Source Field -->
     <div class="custom-form-field poppins-small">
       <label for="source">Source</label>
-      <input id="source" type="text" [(ngModel)]="source" name="source" />
+      <input id="source" type="text" formControlName="source" />
+      <div *ngIf="incomeForm.get('source')?.errors && incomeForm.get('source')?.touched" class="error">
+        Source is required.
+      </div>
     </div>
   </form>
 

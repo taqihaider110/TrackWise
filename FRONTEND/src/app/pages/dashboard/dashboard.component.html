@@ -6,6 +6,7 @@
     <app-side-bar class="pr-15"></app-side-bar>
 
     <div class="flex flex-col flex-1 pr-10">
+      <!-- Row 1: Income Line Chart and Pie Chart -->
       <div class="flex flex-col lg:flex-row gap-6">
         <div class="g-container">
           <app-line-chart
@@ -27,6 +28,7 @@
         </div>
       </div>
 
+      <!-- Row 2: Expense Line Chart and Pie Chart -->
       <div class="flex flex-col lg:flex-row gap-6 mt-10">
         <div class="g-container lg:order-2">
           <app-line-chart
@@ -37,7 +39,6 @@
           ></app-line-chart>
         </div>
         <div class="pc-container lg:order-1">
-          <!-- Expense Pie Chart -->
           <app-pie-chart
             [pieChartData]="expensePieChartData"
             [currentMonthName]="monthNames[currentMonthIndex]"
@@ -48,7 +49,7 @@
         </div>
       </div>
 
-      <!-- New Savings Line Chart -->
+      <!-- Row 3: Savings Line Chart and Total Savings Card -->
       <div class="flex flex-col lg:flex-row gap-6 mt-10">
         <div class="g-container">
           <app-line-chart

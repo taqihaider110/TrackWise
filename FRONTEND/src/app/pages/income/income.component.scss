@@ -92,7 +92,6 @@
 
 .g-container {
   height: 350px;
-  // width: 100%;
   max-width: 1450px;
   background-color: black;
   box-shadow: 0 2px 15px 10px #0606066c;
@@ -104,73 +103,10 @@
 
 .pc-container {
   height: 350px;
-  width: 100%;
   max-width: 340px;
   background-color: black;
   box-shadow: 0 2px 15px 10px #0606066c;
   border-radius: 16px;
-}
-
-.total-income-card {
-  // margin: 30px 0;
-  display: flex;
-  justify-content: center;
-
-  .card-box {
-    background: rgba(40, 40, 40, 0.9); /* Modern gradient */
-    border-radius: 20px;
-    padding: 30px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-    text-align: center;
-    color: #fff;
-    max-width: 450px;
-    width: 100%;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-
-    &:hover {
-      transform: translateY(-5px);
-      border-color: #02ea77;
-      box-shadow: 0px 5px 25px rgba(2, 234, 118, 0.24);
-    }
-
-    .card-header {
-      margin-bottom: 50px;
-
-      .card-title {
-        // font-size: 26px;
-        // font-weight: 700;
-        margin: 0;
-        color: #ffffff;
-      }
-
-      .card-subtitle {
-        // font-size: 18px;
-        color: rgba(255, 255, 255, 0.8);
-        margin-top: 5px;
-      }
-    }
-
-    .card-body {
-      .total-amount {
-        // font-size: 48px;
-        // font-weight: bold;
-        display: flex;
-        justify-content: center;
-        align-items: baseline;
-
-        .currency {
-          // font-size: 24px;
-          margin-right: 5px;
-          color: #02ea77; /* Highlighted currency */
-        }
-
-        .amount {
-          // font-size: 56px;
-          color: #ffffff;
-        }
-      }
-    }
-  }
 }
 
 .button-2 {

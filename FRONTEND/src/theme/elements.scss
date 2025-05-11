@@ -68,3 +68,52 @@
     transform: scale(1.05);
   }
 }
+
+
+input[type="date"] {
+  appearance: none; /* Remove default browser styling */
+  -webkit-appearance: none; /* Remove default WebKit styling */
+  background-color: #2e2e2e; /* Set background color */
+  color: white; /* Set text color */
+  border: 1px solid #3a3a3a; /* Add border */
+  border-radius: 8px; /* Add rounded corners */
+  padding: 10px; /* Add padding */
+  font-size: 1rem; /* Set font size */
+  width: 100%; /* Make the input take full width */
+
+  &:focus {
+    outline: none; /* Remove default focus outline */
+    border-color: #02ea77; /* Highlight border on focus */
+    box-shadow: 0 0 5px rgba(2, 234, 119, 0.5); /* Add focus shadow */
+  }
+}
+
+/* Style the calendar icon */
+input[type="month"]::-webkit-calendar-picker-indicator {
+  background-color: #02ea77; /* Set background color for the icon */
+  color: white !important; /* Set icon color */
+  border-radius: 50%; /* Make the icon circular */
+  padding: 5px; /* Add padding inside the icon */
+  cursor: pointer; /* Change cursor to pointer */
+}
+
+/* Hide the default calendar icon if needed */
+input[type="month"]::-webkit-inner-spin-button,
+input[type="month"]::-webkit-clear-button {
+  display: none; /* Hide spin and clear buttons */
+}
+
+
+input[type="month"]::-webkit-calendar-picker-indicator {
+  background-color: #02ea77; /* Set background color for the icon */
+  color: white !important; /* Set icon color */
+  border-radius: 50%; /* Make the icon circular */
+  padding: 5px; /* Add padding inside the icon */
+  cursor: pointer; /* Change cursor to pointer */
+}
+
+/* Hide the default calendar icon if needed */
+input[type="date"]::-webkit-inner-spin-button,
+input[type="date"]::-webkit-clear-button {
+  display: none; /* Hide spin and clear buttons */
+}

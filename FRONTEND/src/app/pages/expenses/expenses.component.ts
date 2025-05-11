@@ -44,12 +44,12 @@ export class ExpensesComponent {
   totalMonthlyExpense: number=0;
 
   showAll: boolean = false;
+  maxMonthYear: string = '';
 
   monthNames = [
     'January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December'
   ];
-totalMonthlySavings: any;
 
   constructor(
     private api: ApiService,
@@ -63,6 +63,9 @@ totalMonthlySavings: any;
     const year = today.getFullYear();
     const month = today.getMonth() + 1;
     this.selectedMonthYear = `${year}-${month.toString().padStart(2, '0')}`;
+
+    this.maxMonthYear = today.toISOString().slice(0, 7);
+
     this.showExpenses();
     this.initializeExpenseChart();
     this.intializeExpensePieChartData();
@@ -70,6 +73,7 @@ totalMonthlySavings: any;
 
   openAddExpenseModal(): void {
     const dialogRef = this.dialog.open(AddExpenseModalComponent, {
+      autoFocus: false, 
       width: '400px',
     });
 

@@ -48,6 +48,7 @@
               type="month"
               [(ngModel)]="selectedMonthYear"
               (change)="onDateChange()"
+              [max]="maxMonthYear"
             />
           </div>
 

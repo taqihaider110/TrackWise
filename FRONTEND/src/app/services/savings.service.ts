@@ -20,7 +20,7 @@ export class SavingsService {
               month: monthNames[parseInt(item.month.split('-')[1], 10) - 1], // Convert numeric month to name
               total: item.savings
             }))
-            .reverse(); // Reverse the order of the array
+            // .reverse(); // Reverse the order of the array
         })
       );
     }

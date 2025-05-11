@@ -1,24 +1,42 @@
 <div class="custom-modal-content">
   <div class="custom-modal-title poppins-medium">Add Expense</div>
-  <form>
+  <form [formGroup]="expenseForm">
+    <!-- Category Field -->
     <div class="custom-form-field poppins-small">
       <label for="category">Category</label>
-      <input id="category" type="text" [(ngModel)]="category" name="category" />
+      <input id="category" type="text" formControlName="category" />
+      <div *ngIf="expenseForm.get('category')?.errors && expenseForm.get('category')?.touched" class="error">
+        Category is required.
+      </div>
     </div>
 
+    <!-- Amount Field -->
     <div class="custom-form-field poppins-small">
       <label for="amount">Amount In Rs</label>
-      <input id="amount" type="number" [(ngModel)]="amount" name="amount" />
+      <input id="amount" type="number" formControlName="amount" />
+      <div *ngIf="expenseForm.get('amount')?.errors && expenseForm.get('amount')?.touched" class="error">
+        <span *ngIf="expenseForm.get('amount')?.errors?.['required']">Amount is required.</span>
+        <span *ngIf="expenseForm.get('amount')?.errors?.['min']">Amount must be greater than 0.</span>
+      </div>
     </div>
 
+    <!-- Date Field -->
     <div class="custom-form-field poppins-small">
       <label for="date">Date</label>
-      <input id="date" type="date" [(ngModel)]="date" name="date" />
+      <input id="date" type="date" formControlName="date" [max]="maxDate" />
+      <div *ngIf="expenseForm.get('date')?.errors && expenseForm.get('date')?.touched" class="error">
+        <span *ngIf="expenseForm.get('date')?.errors?.['required']">Date is required.</span>
+        <span *ngIf="expenseForm.get('date')?.errors?.['max']">Date cannot be in the future.</span>
+      </div>
     </div>
 
+    <!-- Description Field -->
     <div class="custom-form-field poppins-small">
       <label for="description">Description</label>
-      <input id="description" type="text" [(ngModel)]="description" name="description" />
+      <input id="description" type="text" formControlName="description" />
+      <div *ngIf="expenseForm.get('description')?.errors && expenseForm.get('description')?.touched" class="error">
+        Description is required.
+      </div>
     </div>
   </form>
 
