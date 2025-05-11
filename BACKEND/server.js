@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config(); // Load environment variables
-const open = require('open').default; // To open Swagger UI in browser
+// const open = require('open').default; // To open Swagger UI in browser
 
 const { connectDB } = require('./config/db'); // DB connection
 
