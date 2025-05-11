@@ -48,6 +48,8 @@ const router = express.Router();
  *         description: Paginated savings records
  *       400:
  *         description: Invalid input or request
+ *       500:
+ *        description: Internal server error
  */
 router.get("/", authMiddleware, getAllSavingsForUser);
 
@@ -72,6 +74,8 @@ router.get("/", authMiddleware, getAllSavingsForUser);
  *         description: Net savings for the specified month
  *       400:
  *         description: Invalid input or request
+ *       500:
+ *        description: Internal server error
  */
 router.get("/monthly", authMiddleware, getMonthlySavingProgress);
 
@@ -88,6 +92,8 @@ router.get("/monthly", authMiddleware, getMonthlySavingProgress);
  *         description: List of savings progress for each month in the past year
  *       400:
  *         description: Failed to fetch data
+ *       500:
+ *        description: Internal server error
  */
 router.get("/past-12-months", authMiddleware, getPast12MonthsSavings);
 
