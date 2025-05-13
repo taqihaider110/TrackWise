@@ -26,7 +26,7 @@ const getExpensePrediction = async (req, res) => {
             return res.status(400).json({ error: "User ID is missing" });
         }
 
-        const response = await axios.get(`http://localhost:5000/api/v1/forecast-expense`, {
+        const response = await axios.get(`http://127.0.0.1:5000/api/v1/forecast-expense`, {
             // params: { userId: req.user.id, month },
             params: { month },
         });
@@ -41,7 +41,7 @@ const getExpensePrediction = async (req, res) => {
 // Get goal achievement prediction
 const getGoalPrediction = async (req, res) => {
     try {
-        const response = await axios.get(`http://localhost:5000/api/v1/predict-goal-achievement`, {
+        const response = await axios.get(`http://127.0.0.1:5000/api/v1/predict-goal-achievement`, {
             params: { userId: req.user.id },
         });
 
@@ -55,7 +55,7 @@ const getGoalPrediction = async (req, res) => {
 // Get AI-based budget recommendation
 const getBudgetRecommendation = async (req, res) => {
     try {
-        const response = await axios.get(`http://localhost:5000/api/v1/recommend-budget`, {
+        const response = await axios.get(`http://127.0.0.1:5000/api/v1/recommend-budget`, {
             params: { userId: req.user.id },
         });
 
