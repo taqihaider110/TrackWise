@@ -14,8 +14,8 @@ const authMiddleware = require("../middlewares/authMiddleware");
 /**
  * @swagger
  * /api/v1/predictions/expenses:
- *   get:
- *     summary: Get predicted future expenses
+ *   post:
+ *     summary: Predicted future expenses
  *     tags: [Predictions]
  *     security:
  *       - bearerAuth: []
@@ -30,13 +30,13 @@ const authMiddleware = require("../middlewares/authMiddleware");
  *       200:
  *         description: Predicted future expenses
  */
-router.get("/expenses", authMiddleware, aimodelController.getExpensePrediction);
+router.post("/expenses", authMiddleware, aimodelController.getExpensePrediction);
 
 // Goal Achievement Prediction
 /**
  * @swagger
  * /api/v1/predictions/goals:
- *   get:
+ *   post:
  *     summary: Predict goal achievement likelihood
  *     tags: [Predictions]
  *     security:
@@ -45,14 +45,14 @@ router.get("/expenses", authMiddleware, aimodelController.getExpensePrediction);
  *       200:
  *         description: Prediction of goal achievement
  */
-router.get("/goals", authMiddleware, aimodelController.getGoalPrediction);
+router.post("/goals", authMiddleware, aimodelController.getGoalPrediction);
 
 // Budget Recommendation
 /**
  * @swagger
  * /api/v1/predictions/budget:
- *   get:
- *     summary: Get AI-based budget recommendations
+ *   post:
+ *     summary: AI-based budget recommendations
  *     tags: [Predictions]
  *     security:
  *       - bearerAuth: []
@@ -60,7 +60,7 @@ router.get("/goals", authMiddleware, aimodelController.getGoalPrediction);
  *       200:
  *         description: Budget recommendation based on past expenses
  */
-router.get("/budget", authMiddleware, aimodelController.getBudgetRecommendation);
+router.post("/budget", authMiddleware, aimodelController.getBudgetRecommendation);
 
 // Expense Categorization
 /**

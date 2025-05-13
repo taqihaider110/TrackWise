@@ -80,8 +80,8 @@ paths:
 
   /api/v1/recommend-budget:
     post:
-      summary: Recommend Budget Category
-      description: Recommend a budget category based on the given amount.
+      summary: Get Personalized Budget Recommendations
+      description: Get detailed budget allocation recommendations based on spending patterns and amount
       requestBody:
         content:
           application/json:
@@ -91,17 +91,37 @@ paths:
                 amount:
                   type: number
                   format: float
+                  description: Total budget amount to allocate
               required:
                 - amount
       responses:
         '200':
-          description: Budget recommendation successful
+          description: Budget recommendations successful
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  recommended_budget_category:
-                    type: integer
+                  spender_type:
+                    type: string
+                    description: Classification of spending pattern (e.g., "Saver", "Balanced", "High Spender")
+                  total_budget:
+                    type: number
+                    format: float
+                    description: Total budget amount provided
+                  category_percentages:
+                    type: object
+                    description: Recommended percentage allocation per category
+                    additionalProperties:
+                      type: number
+                      format: float
+                  recommended_amounts:
+                    type: object
+                    description: Recommended amount allocation per category
+                    additionalProperties:
+                      type: number
+                      format: float
         '400':
           description: Missing amount
+        '500':
+          description: Internal server error

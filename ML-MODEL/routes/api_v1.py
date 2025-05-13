@@ -13,12 +13,12 @@ def predict_category():
 
 @api_v1_blueprint.route("/forecast-expense", methods=["POST"])
 def forecast_expense():
-    return forecast_expense_logic()
+    return forecast_expense_logic(request)
 
-# @api_v1_blueprint.route("/predict-goal-achievement", methods=["POST"])
-# def predict_goal_achievement():
-#     return predict_goal_achievement_logic(request)
+@api_v1_blueprint.route("/predict-goal-achievement", methods=["POST"])
+def predict_goal_achievement():
+    return predict_goal_achievement_logic(request)
 
-# @api_v1_blueprint.route("/recommend-budget", methods=["POST"])
-# def recommend_budget():
-#     return recommend_budget_logic(request)
+@api_v1_blueprint.route("/recommend-budget", methods=["POST"])
+def recommend_budget():
+    return recommend_budget_logic(request)
