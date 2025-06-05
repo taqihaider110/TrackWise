@@ -1,6 +1,24 @@
 
 # TrackWise
 
+## Introduction
+Managing personal finances is a challenge that most people face, often without a clear system in place. People rely on disorganized notes, spreadsheets, or fragmented mobile apps, making it difficult to get a unified view of their income and spending habits. TrackWise aims to solve this by providing a centralized, intuitive, and extensible web application where users can track their finances effectively.
+
+This project is built using Angular 19 for the frontend and Node.js for the backend, following a modular, scalable structure. The app focuses on foundational features that allow manual tracking and sorting, accompanied by insightful data visualization.
+
+## Problem Statement
+Most individuals today lack a centralized, easy-to-use platform for managing their finances. With money being spent across cash, cards, and multiple services, users often:
+● Lose track of where their money is going.
+● Rely on scattered tools like notes and spreadsheets.
+● Miss out on potential savings due to lack of visibility.
+TrackWise addresses this relatable pain point by offering a structured financial tracking tool tailored to real-life usage.
+
+## Objectives
+● Provide a secure, user-friendly platform for recording and managing financial transactions.
+● Allow full control over expenses and income records through CRUD operations.
+● Visualize income and spending patterns in real-time using interactive dashboards.
+● Display monthly income sources and expense categories through interactive charts.
+
 ## Running Locally
 
 ### Local Development with Local DB
